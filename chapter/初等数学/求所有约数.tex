@@ -1,0 +1,62 @@
+\section{求所有约数}
+约数个数的上限是 $2 \sqrt N$。
+
+\subsection{试除法}
+和 \ref{sec:判断素数} 检测是否是素数类似，我们可以求取所有的约数。返回一个将亡值
+，所以我们可以使用一个右值引用啦。我们可以在 $O(\sqrt n)$ 的复杂度来求出所有的约
+数。
+\begin{Cpp}
+vector<int> get_divs(int x){
+    vector<int> res;
+    for(int i=1;i*i<=n;i++) if(x%i==0){
+        res.push_back(i);
+        if(i!=x/i)res.push_back(x/i);
+    }
+    sort(res.begin(),res.end());
+    return res;
+}
+\end{Cpp}
+
+
+\subsection{类筛法}
+我们可以使用类似筛法的方法来求出所有的约数。如下：
+\begin{Cpp}
+inline void get_factor(){
+    for(int i = 1; i <= N; i ++) {
+        for(int k = 1; k <= N; k += 1) {
+            factor[i].push_back(i);
+            // factor[i][++factor[i][0]] = i;
+        }
+    }
+}
+\end{Cpp}
+
+
+\subsection{基于线性素数筛的快速求法}
+基于章节 \ref{sec:欧拉筛} 中的欧拉筛先筛出所有素数，再求。
+
+复杂度就是约数的个数。在 $10^8$ 的范围内不会超过 $10^3$。
+\begin{Cpp}
+// ...
+int SMFA[P_RAG],PS[P_RAG];
+void PS_init();
+
+int divs[7000],divs_len;
+// 依赖于欧拉筛产生的最大质因子。
+void fast_divs(int x){
+  divs_len=1;
+  divs[0]=1;
+  while(x>1){
+    int fa=SMFA[x],cnt=0;
+    while(x%fa==0){
+      x/=fa,cnt++;
+    }
+    int bf_len=divs_len;
+    for(int c=1,cc=fa;c<=cnt;c++,cc*=fa){
+      for(int i=0;i<bf_len;i++){
+        divs[divs_len++]=cc*divs[i];
+      }
+    }
+  }
+}
+\end{Cpp}

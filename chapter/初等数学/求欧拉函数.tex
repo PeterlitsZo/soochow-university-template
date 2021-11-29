@@ -1,0 +1,29 @@
+\section{欧拉函数} \label{sec:求欧拉函数} \label{sec:欧拉函数}
+欧拉函数的定义是：小于等于 $n$ 的所有与 $n$ 互质的数的个数。
+
+这也说明了：
+\begin{itemize}
+    \item $\varphi(p) = p-1$。
+    \item $\varphi(p^i) = p^{i-1}(p - 1)$。
+    \item 因为 $\varphi$ 是一个积性函数，所以 $\varphi(pq) = \varphi(p)
+        \varphi(q)$（其实这里可能有循环论证的嫌疑，实际上这里可以利用章节
+        \ref{sec:中国剩余定理} 的中国剩余定理来证明）。
+\end{itemize}
+
+众所周知，欧拉函数为 $\varphi(x) = x \prod^{n}_{i=1}(1-\frac{1}{p_i})$。同时我们可
+以知道 $\phi(1) = 1$，而对于素数 $p$ 而言有 $\phi(p) = p - 1$，故其代码为：
+\begin{Cpp}
+int phi(int x){
+    int res=x;
+    for(int i=2;i*i<=x;i++)if(x%i==0){
+        res=res/i*(i-1);
+        while(x%i==0)x/=i;
+    }if(x>1)res=res/x*(x-1);
+    return res;
+}
+\end{Cpp}
+
+可以看出其代码和 \ref{sec:分解质因数} 章分解质因数类似，其复杂度故也为 $O(\sqrt
+n)$。
+
+这里我们可以根据欧拉函数来解决欧拉定理（见章节 \ref{sec:欧拉定理}）。

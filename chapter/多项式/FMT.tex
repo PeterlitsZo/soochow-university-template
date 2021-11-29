@@ -1,0 +1,21 @@
+\section{FMT --- 快速莫比乌斯变换}
+FMT 是用来求按位或的卷积。我们不妨对比一下，对于快速傅里叶变换我们有：
+$$
+\mathrm{FFT}(A(x), B(x)) = \sum_{k} \sum_{i + j = k} a_i b_j x^{i + j}
+$$
+
+而对于 FMT 或者 FWT，我们则需要解决以下的问题：
+$$
+C(x) = \sum a_i b_j x^{i \OpOr j}
+$$
+
+或者：
+$$
+C(x) = \sum a_i b_j x^{i \OpAnd j}
+$$
+
+或者：
+$$
+C(x) = \sum a_i b_j x^{i \OpXor j}
+$$
+

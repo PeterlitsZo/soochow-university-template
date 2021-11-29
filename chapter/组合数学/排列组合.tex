@@ -1,0 +1,61 @@
+\section{排列组合}
+排列数 $A_n^k$ 有：\[
+    A_n^k = {n! \over (n-k)!}
+\]
+
+而组合数 $C_n^k = {n \choose k}$ 有：\[
+    {n \choose k} = {n! \over k! (n-k)!}
+\]
+
+我们可以使用下列函数求出排列数和组合数（快速幂代码见章节 \ref{sec:快速幂}）：
+\begin{Cpp}
+ll fac[LEN],inv[LEN];
+
+ll fpow(ll b,ll p);
+
+void init(){
+  fac[0]=1;
+  for(int i=1;i<LEN;i++)
+    fac[i]=fac[i-1]*i%MOD;
+  inv[LEN-1]=fpow(fac[LEN-1],MOD-2);
+  for(int i=LEN-2;i>=0;i--)
+    inv[i]=inv[i+1]*(i+1)%MOD;
+}
+
+ll A(int N,int m){
+  if(m>N||m<0)return 0;
+  return fac[N]*inv[N-m]%MOD;
+}
+
+ll C(int N,int m){
+  // 如果有 A 函数的话，直接：
+  // return A(N,m)*inv[m]%MOD;
+  if(m>N||m<0) return 0;
+  return fac[N]*inv[m]%MOD*inv[N-m]%MOD;
+}
+\end{Cpp}
+
+
+
+\subsection{捆绑法}
+
+把一些元素捆绑在一起以视为一个独立的元素。
+
+比如有 $5$ 个男生和 $3$ 个女生。女生都要在一起。问有多少种不同的排队情况。那么有
+：$A_6^6 A_3^3$
+
+
+
+\subsection{插板法}
+\label{subsec:插板法} \label{subsec:插空法}
+
+如果在 $m$ 个球中搞到 $n$ 个盒子中，盒子两两之间都是不同的，那么：
+\begin{itemize}
+    \item 如果不允许为空，那么解是 $m - 1 \choose n - 1$。这个解是因为 $m$ 个球
+        ，不包含两端有 $m - 1$ 个空，然后选择 $n - 1$ 个隔板。隔出来了之后就是
+        $n$ 个盒子了。
+    \item 如果允许为空，那么解是 $m + n - 1 \choose n - 1$。这个解是因为它插入了
+        虚拟球，一共有 $n$ 个盒子，那么我们在里面插入 $n$ 个虚拟球。选出来了之后
+        指定第一个是虚拟球去掉即可。
+\end{itemize}
+

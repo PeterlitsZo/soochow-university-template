@@ -1,0 +1,44 @@
+\section{特征向量} \label{sec:特征向量}
+给定一个矩形 $\MATID A$，我们定义它的特征向量 $\vec{x}$ 是存在一个常数 $\lambda$ 使得
+：\[ \MATID A \vec{x} = \lambda \vec{x} \]其中 $\lambda$ 是特征值。
+
+对于二阶矩阵而言，一般都有两个特征向量。我们可以用特征向量的定义来做。
+
+比如我们打算求下列矩阵的特征向量：\[
+    \begin{bmatrix}
+        1 & 1 \\ 1 & 0
+    \end{bmatrix}
+\]
+
+那么为了避免奇点，我们搞一个长度为 $1$ 的向量，设 $\vec x = (\sin \theta, \cos
+\theta)$。
+
+根据定理，我们有：\[
+    \begin{bmatrix}
+    1 & 1 \\
+    1 & 0
+    \end{bmatrix} \begin{bmatrix}
+    \sin \theta \\ \cos \theta
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \sin \theta + \cos \theta \\ \sin \theta
+    \end{bmatrix}
+\]
+
+因为特征向量被其矩阵相乘后方向不变，那么下行列式的值为 $0$（见 \ref{sec:行列式}
+章）：\[\begin{aligned}
+    & \begin{vmatrix}
+        \sin \theta & \sin \theta + \cos \theta \\
+        \cos \theta & \sin \theta \\
+    \end{vmatrix} \\ = & {}\sin^2 \theta - \sin \theta \cos \theta - \cos^2 \theta
+\end{aligned}\]
+
+即 $\tan^2 \theta - \tan \theta - 1 = 0$，解得：\[
+    \tan \theta = {1 \pm \sqrt 5 \over 2}
+\]
+
+那么我们就可以求出 $(\sin\theta, \cos\theta)$ 了。
+
+它可以用来求取矩阵的幂，见 \ref{sec:矩阵的幂} 章。
+

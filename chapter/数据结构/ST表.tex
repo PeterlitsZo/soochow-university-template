@@ -1,0 +1,34 @@
+\section{ST 表} \label{sec:ST表}
+我了解这个主要是它能解决 RMQ 问题，即区间最值问题。当然也可以尝试看看线段树（见
+第 \ref{sec:线段树} 章）。不过如果不维护的话，或许 ST 表会好写很多。
+
+ST 只能处理可重复贡献，如 $\mathrm{max}$ 或者 $\mathrm{min}$ 之类的。
+
+所以代码如下：
+\begin{Cpp}
+/*
+  // depth of ST: n: 1e6 -> 20+, 1e3 -> 10+
+  int A[LEN],ST[LEN<<1][20],n;
+*/
+
+void get_st(){
+  for(int i=0;i<n;i++){
+    ST[i][0]=A[i];
+  }
+  for(int j=1,stp=1; j<=(int)log2(n);
+      j++,stp<<=1){
+    for(int i=0;i<n;i++){
+      // 因为我做的题目保证正数，所以可以这么做，
+      // 不然就参照附录进行初始化吧。
+      // AND: 可能不是 max。
+      ST[i][j]=max(ST[i][j-1],ST[i+stp][j-1]);
+    }
+  }
+}
+
+inline int query(int l,int r){
+  int lv=log2(r-l+1);
+  // AND: 可能不是 max。
+  return max(ST[l][lv],ST[r-(1<<lv)+1][lv]);
+}
+\end{Cpp}

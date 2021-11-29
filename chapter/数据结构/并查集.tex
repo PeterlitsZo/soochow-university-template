@@ -1,0 +1,28 @@
+\section{并查集}
+简简单单的并查集。
+
+我们定义父亲节点的数组，一开始，自己是自己的老汉，注意，从 $1$ 开始：
+\begin{Cpp}
+\\ int fa[LEN], n;
+
+void init_fa(){
+  for(int i=1;i<=n;i++)fa[i]=i;
+}
+\end{Cpp}
+
+然后我们可以查询根节点，简简单单：
+\begin{Cpp}
+int get_fa(int n){
+  return fa[n]!=n?fa[n]=get_fa(fa[n]):n;
+}
+\end{Cpp}
+
+然后我们可以 merge 一哈：
+\begin{Cpp}
+void merge(int u,int v){
+  if(get_fa(u)==get_fa(v)) return;
+  fa[get_fa(u)]=get_fa(v);
+}
+\end{Cpp}
+
+

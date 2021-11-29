@@ -1,0 +1,26 @@
+\section{威佐夫博弈}
+威佐夫博弈扩展到两个堆上，且限制也不同了：每个人可以从一个堆上去任意多个，也可以
+在两个堆上取得相同的任意多个。先取完者获胜。求取最后他到底必赢还是必输。
+
+奇异局势为 $(0,0)$，$(1,2)$，$(3,5)$，$(4,7)$，$\ldots$，其中第 $i$ 个奇异局势第
+一分量为 $0\ldots i-1$ 的奇异局势中所有分量的 $\mex$ 值，而第二分量为第一分量 +
+$i$。
+
+以上是递归形式的威佐夫博弈结论，但是根据贝亚蒂定理，我们可以推导出 $\frac 1\phi
++ \frac 1{\phi^2} = 1 \Rightarrow \lfloor\phi \cdot n\rfloor \text{与} \lfloor
+\phi^2 \cdot n\rfloor \text{构成了对正整数的划分}$。又因为 $\phi^2 = \phi + 1$，
+恰好满足了第二个条件。
+
+代码应该如下：
+\begin{Cpp}
+// 0: lost, 1: win
+int WZF(int a,int b){
+    if(a>b)swap(a,b);
+    int k=b-a;
+    return floor((1+sqrt(5))/2*k)==a;
+}
+\end{Cpp}
+
+虽然都说 SG 函数可以用来描述博弈论题目，但是并不总是有效。
+
+

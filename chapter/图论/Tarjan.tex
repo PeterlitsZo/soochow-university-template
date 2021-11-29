@@ -1,0 +1,56 @@
+\section{Tarjan 算法}\label{sec:Tarjan}
+\subsection{用于求强连通分量的 Tarjan 算法}
+关于连通性相关的知识，见 \ref{sec:连通性相关} 章节 --- 连通性相关。
+
+在了解 Tarjan 之前，我们需要了解 DFS 生成树，见 \ref{subsec:DFS生成树}。
+
+如果要求强连通分量的话，我们可以在一个图上跑一跑 DFS 生成树。我们可以知道，如果
+我们以 $u$ 作为根来跑在一个强连通分量上，该分量的其他点都在搜索树中 $u$ 的子树上
+。
+
+Tarjan 为每一个节点都定义了两个变量：\verb|dfn| 和 \verb|low|，分别表示在 DFS 过
+程中搜索的次序，和能够最早回溯的{\bfseries 已经}在栈中的节点。
+
+在 DFS 中，如果当前在节点 $u$，下一个节点是 $v$，那么有三种情况：
+\begin{enumerate}
+    \item 如果 $v$ 未能访问，那么用 $v$ 的 \verb|low| 值来更新 $u$ 的 \verb|low|
+        值。
+
+    \item 如果 $v$ 已经访问过了而且在栈中，那么我们考虑用 $v$ 的 \verb|dfn| 值来
+        更新 $u$的 \verb|low| 值。
+
+    \item 如果 $v$ 已经访问过了，不过没有在栈中，那么我们不做处理。
+\end{enumerate}
+
+板子如下：
+\begin{Cpp}
+// C++ Version
+int dfn[N], low[N], dfncnt, s[N], in_stack[N], tp;
+int scc[N], sc;  // 结点 i 所在 SCC 的编号
+int sz[N];       // 强连通 i 的大小
+void tarjan(int u) {
+  low[u] = dfn[u] = ++dfncnt, s[++tp] = u, in_stack[u] = 1;
+  for (int i = h[u]; i; i = e[i].nex) {
+    const int &v = e[i].t;
+    if (!dfn[v]) {
+      tarjan(v);
+      low[u] = min(low[u], low[v]);
+    } else if (in_stack[v]) {
+      low[u] = min(low[u], dfn[v]);
+    }
+  }
+  if (dfn[u] == low[u]) {
+    ++sc;
+    while (s[tp] != u) {
+      scc[s[tp]] = sc;
+      sz[sc]++;
+      in_stack[s[tp]] = 0;
+      --tp;
+    }
+    scc[s[tp]] = sc;
+    sz[sc]++;
+    in_stack[s[tp]] = 0;
+    --tp;
+  }
+}
+\end{Cpp}

@@ -1,0 +1,40 @@
+
+\section{对拍}
+\subsection{Windows}
+没有办法，在 Windows 下只能把目录搞脏，所以输入文件 \cmd{test.input}，输出文件
+\cmd{test.output}，以及它们的生成程序 \cmd{couple.exe} 和 \cmd{test.cpp} 都应该
+在同一个目录下。
+
+之后我们需要重定向自己程序的输入和输出。
+
+下面为 \cmd{couple.cpp} 的相关代码：
+\begin{Cpp}
+#include <bits/stdc++.h>
+using namespace std;
+
+void build_input(){
+  freopen("test.input","w", stdout);
+  int a=rand(), b=rand();
+  printf("%d %d\n", a, b);
+}
+
+void build_std(){
+  freopen("test.input","r", stdin);
+  freopen("test.output","w", stdout);
+  // etc ...
+}
+
+int main(){
+  srand(time(0));
+  while (1){
+    build_input();
+    build_std();
+
+    system("/* name of program */.exe");
+    if (system("fc test.output self.output"))
+      break;
+  }
+}
+\end{Cpp}
+
+

@@ -1,0 +1,35 @@
+
+\section{模下乘}\label{sec:模下乘}
+模下乘，我们可以使用 \verb|__int128| 这个黑科技：
+\begin{Cpp}
+ll mul(ll a,ll b,/*ll MOD*/){
+    return (__int128)a*b%MOD;
+}
+\end{Cpp}
+
+当然除了黑魔法，我们可以使用 OI-wiki%
+\footnote{\url{https://oi-wiki.org/math/quick-pow/}} 中提到的快速乘。
+
+我们知道 \verb|unsigned long long| 在一般机子上的大小为 8 个字节，为 64 位，故有
+：$$\begin{aligned}
+    a \times b \bmod m ={}& a \times b - \lfloor{ab \over m}\rfloor \times m \\
+        ={}& \left(a \times b - \lfloor{ab \over m}\rfloor \times m\right) \bmod 2^{64} \\
+\end{aligned}$$
+
+那么目前我们只需要算出 $\lfloor{ab \over m}\rfloor$ 即可。
+
+我们知道 \verb|long double| 的长度比 \verb|long long| 还多一倍的长度（其中
+\verb|long double| 有 16 个字节，而 \verb|long long| 有 8 个字节）。在一系列我觉
+得有漏洞的逻辑证明之后，模下乘法变成了：
+\begin{Cpp}
+ll mul(ll a,ll b,/*ll MOD*/){
+    unsigned ll c=(unsigned ll)a*b
+                 -(unsigned)((long double)a/m*b+0.5L)*MOD;
+    if(c<m)return c;
+    return c+m;
+}
+\end{Cpp}
+
+综上，还是 \verb|__int128| 靠谱一点点。
+
+

@@ -1,0 +1,59 @@
+\section{线}
+\subsection{两线交点} \label{subsec:两点交点}
+这里假设两线不平行。
+
+我们不妨假设我们已知第一个直线有 $A$ 点，方向向量是 $\vec a$，第二个直线有 $B$点
+，方向向量是 $\vec b$。假设它们相交于 $E$ 点上，这里连接 $AB$，如 \ref{fig:两点%
+交点} 图所示。
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    \draw (0, 0) -- (2, 4);
+    \draw (5, 0) -- (1, 4);
+    \draw ($(0,0)!.1!0:(2,4)$) coordinate (A) node[left=1mm]{$A$};
+    \draw ($(5,0)!.2!0:(1,4)$) coordinate (B) node[above=1mm]{$B$};
+    \draw (A) -- (B);
+    \filldraw \Tinter{0,0--2,4}{5,0--1,4} coordinate (E) \Tdot node[left=1mm]{$E$}
+              (A) \Tdot
+              (B) \Tdot;
+    \draw[->, thick] (A) -- ($(A)!.4!0:(E)$) node[left=1mm]{$\vec a$};
+    \draw[->, thick] (B) -- ($(B)!.6!0:(E)$) node[above=1mm]{$\vec b$};
+    \draw pic["$\alpha$", draw, angle radius=4mm]{angle=A--E--B};
+    \draw pic["$\beta$", draw, angle radius=6mm]{angle=E--B--A};
+\end{tikzpicture}
+\caption{两点交线}
+\label{fig:两点交点}
+\end{figure}
+
+我们需要求点 $E$ 和 $A$ 的距离，不妨令其为 $|EA| = l$，$|AB| = u$，那么根据正弦定理有：
+$$
+\begin{aligned}
+                    {} & {l \over \sin \beta} = {u \over \sin \alpha} \\
+    \Longrightarrow {} & l = {u \sin \beta \over \sin \alpha}
+\end{aligned}
+$$
+
+一般我们可以使用叉乘来简化有关 $\sin$ 的运算，那么我们有：$|\vec a \times \vec
+b| = |\vec a||\vec b|\sin \alpha$ 和 $|\VEC{AB} \times \vec b| = u |\vec b| \sin
+\beta$，因此有：$$ {|\VEC{AB} \times \vec b| \over |\vec a \times \vec b|} = {u
+\sin \beta \over |\vec a| \sin \alpha} $$
+
+因此我们解得：$$ l = {|\VEC{AB} \times \vec b| \over |\vec a \times \vec b|}
+|\vec a| $$
+
+故 $E = A + l \times {\vec a \over |\vec a|} = A + {|\VEC{AB} \times \vec b|
+\over |\vec a \times \vec b|} \vec a$。
+
+\subsection{中垂线} \label{subsec:中垂线}
+中垂线比较容易解得。考虑给定两个点 $A$ 和 $B$，它们的中点一定在 $({A.x + B.x
+\over 2}, {A.y + B.y \over 2})$，令其为 $C$，接下来是求它的方向向量了。
+
+首先 $A$ 到 $B$ 的方向向量是 $(B.x - A.x, B.y - A.y)$。我们只要找到和它垂直的即
+可。不妨令 $A$ 到 $B$ 的方向向量为 $\vec v$，而所求的为 $\vec u$，那么根据
+\ref{subsec:向量数量积} 章中指出，$\vec v \cdot \vec u = 0$，所以 $\vec u = (B.y
+- A.y, A.x - B.y)$。
+
+如上找到点和方向向量即可。
+
+

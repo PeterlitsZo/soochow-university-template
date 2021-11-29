@@ -1,0 +1,44 @@
+\section{AC自动机}
+AC 自动机就是 Trie（见 \ref{sec:Trie 字典树}）加上 KMP 构成的一个多模式匹配结构
+。
+
+代码如下：
+\begin{Cpp}
+namespace ac{
+  using namespace trie;
+  int fail[LMT];
+  void build(){
+    queue<int> Q;
+    for(int i=0;i<26;i++)if(MP[0][i]){
+      Q.push(MP[0][i]);
+      fail[MP[0][i]]=0;
+    }
+    while(Q.size()){
+      int t=Q.front();Q.pop();
+      for(int i=0;i<26;i++){
+        if(MP[t][i])
+          fail[MP[t][i]]=MP[fail[t]][i],
+          Q.push(MP[t][i]);
+        else
+          MP[t][i]=MP[fail[t]][i];
+      }
+    }
+  }
+  int cnt[LMT]/*,last[LMT]*/;
+  void ask(const char* S){
+    memset(cnt,0,sizeof(int)*(size+1));
+    // memset(last,-1,sizeof(int)*(size+1));
+    int u=0;
+    for(int i=0;S[i];i++){
+      u=MP[u][S[i]-'a'];
+      for(int j=u;j;j=fail[j])
+        // if(last[j]==-1||i>=last[j])
+        //   cnt[j]++,last[j]=i+dep[j];
+        cnt[j]++;
+    }
+  }
+}
+\end{Cpp}
+
+注意，我们需要 \ref{sec:Trie 字典树} 的模板才能正确 Run 起来。
+

@@ -1,0 +1,40 @@
+\section{树状数组}
+简简单单的树状数组，注意 $0$ 在树状数组中是孤儿，所以要从 $1$ 开始。
+
+首先树状数组中下标为 $i$ 的元素，其下标 $i$ 加上 $i$ 对应的 lowbit 即是它的
+parent 节点。
+
+所以我们首先可以解出 lowbit 函数，并且顺便定义一下树状数组的数组 \verb|ta| 和数
+组的长度限制 \verb|TA_LEN|：
+\begin{Cpp}
+constexpr int TA_LEN=/* 长度 */;
+int ta[TA_LEN];
+
+int lowbit(int n){
+  return n&(-n);
+}
+\end{Cpp}
+
+然后我们可以根据这个来更新（而不是 ST 表那样，连更新都更新不了，见 \ref{sec:ST表
+} 章）：
+\begin{Cpp}
+int update(int inx,int val){
+  int i=inx;
+  while(i<TA_LEN){
+    ta[i]+=val;
+    i+=lowbit(i);
+  }
+}
+\end{Cpp}
+
+之后我们有一个查询的函数，他用来查询 $[1, r]$ 的所有值的和：
+\begin{Cpp}
+int query(int r){
+  int result=0;
+  while(r){
+    result+=ta[r];
+    r-=lowbit(r);
+  }
+  return result;
+}
+\end{Cpp}

@@ -1,0 +1,28 @@
+\section{Trie 字典树} \label{sec:Trie 字典树}
+字典树，就是像字典一样的树。每一个节点代表了一个串，构成了一个自动机。
+
+我们一般使用邻接矩阵来表示它，这主要是字典树的出度不可能太大，一般而言最多是 26
+，而邻接矩阵容易维护。令值为 $0$ 时说明没有对应的边，那么所有节点的下标都大于等
+于 $1$。
+
+那么我们有代码：
+\begin{Cpp}
+namespace trie{
+    constexpr int LMT=5e5+256;
+    int MP[LMT][26],size/*,dep[LMT]*/;
+    void clear(){
+        for(int i=0;i<26;i++)MP[0][i]=-1;
+        /*dep[0]=0; 等等初始化。*/
+        size=1;
+    }
+    int add(int ind,char ch){ // 可能不是 char
+        int& nxt=MP[ind][ch-'a'];
+        if(!nxt){
+            nxt=size++;
+            for(int i=0;i<26;i++)MP[nxt][i]=-1;
+            /*dep[nxt]=dep[ind]+1; 等等初始化。*/
+        }
+        return nxt;
+    }
+}
+\end{Cpp}

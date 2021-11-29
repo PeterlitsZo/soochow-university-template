@@ -1,0 +1,37 @@
+\section{快速读写}
+\subsection{快速读}
+快速读入一个数字。
+\begin{Cpp}
+inline int read() {
+    // s -> 读入的数字，w -> 符号，1 表示正数，-1 表示负数
+    int s=0,w=1;
+    char ch=getchar();
+    for(;ch<'0'||ch>'9';ch=getchar())
+        if(ch=='-')w=-1;
+    for(;ch>='0'&&ch<='9';ch=getchar())
+        s=s*10+ch-'0';
+    return s*w;
+}
+\end{Cpp}
+
+\subsection{快速写}
+快速写出一个数字
+\begin{Cpp}
+inline void wrt(long long x, const char endc = '\n') {
+    // 一个缓存数组，和一个一开始指向它的指针
+    static char buf[21],*nw; nw=buf;
+    // 处理 0
+    if (!x){
+        putchar('0');
+        goto end;
+    }
+    // 处理负数
+    if(x<0) putchar('-'),x=-x;
+    // 处理每一个数
+    while(x) *(nw++)=x%10+'0',x/=10;
+    // 输出
+    while(nw!=buf) putchar(*(--nw));
+end:
+    putchar(endc);
+}
+\end{Cpp}

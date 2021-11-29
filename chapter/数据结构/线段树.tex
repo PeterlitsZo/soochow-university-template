@@ -1,0 +1,62 @@
+\section{线段树} \label{sec:线段树}
+
+曾几何时，我幻想我能逃离线段树的魔爪，现在想来，终究是错付了。正所谓十个数据结构
+，九个线段树，即使只是一个小小的数学/字符串选手，也依然要面临线段树的洗礼！阿西
+吧！
+
+对于 RMQ（区间最值），我们也可以使用 ST 表（见第 \ref{sec:ST表} 章）！他们说使用
+ST 表会好写很多。
+
+\subsection{线段树的数据结构}
+在竞赛中数组优先。我们使用一个 \cmd{int[MAXN]} 类型的数组 \cmd{A} 来存储叶子节点
+的所有值。使用 \cmd{int[MAXN<<2]}（必须是 $4$ 倍而不是 $2$ 倍。我也不知道为什么
+）的数组 \cmd{seg} 来存储所有的节点维护的数据。
+
+\subsection{建树}
+建树一般采取递归的手法，其中下份代码对应的根节点为 $0$：
+\begin{Cpp}
+// i: 节点对应的编号。l, r: 节点管辖的范围。
+void build(int i,int l,int r){
+  if(l==r){ // 叶子
+    cin>>A[l];
+    /* ? */ // 维护 seg 数组
+    return;
+  }
+  // 非叶子，递归即可。
+  build(i*2+1,l,l+(r-l)/2);
+  build(i*2+2,l+(r-l)/2+1,r);
+  calc(i,l,r); // 维护 seg 数组
+}
+\end{Cpp}
+
+\subsection{维护}
+对于一个节点而言，它需要维护它的值始终正确。我们可以使用函数 \cmd{calc} 来维护它
+，并在建树和更新的时候调用它。
+
+\subsection{更新}
+我们可以使用 \cmd{update} 来更新它的值：
+\begin{Cpp}
+// x 坐标的对应值更新为了 y。
+void update(int i,int l,int r,int x,int y){
+  if(l==r){a[x]=y; return;}
+  if(x<=l+(r-l)/2)
+    update(i*2+1,l,l+(r-l)/2,x,y);
+  else
+    update(i*2+2,l+(r-l)/2+1,r,x,y);
+  calc(i,l,r);
+}
+\end{Cpp}
+
+\subsection{查询}
+我们依然要传入节点对应编号、节点管辖范围。除此之外，我们还需要传入查询的范围：
+\begin{Cpp}
+// i：节点对应的编号。l, r：节点对应的范围。
+// qL, qR：查询范围，qL >= l && qR <= r 恒成立。
+int ans;
+void query(int i,int l,int r,int qL,int qR){
+  /* ? */ // ans 求值。
+  query(i*2+1,l,l+(r-l)/2,qL,qR);
+  query(i*2+2,l+(r-l)/2+1,r,qL,qR);
+}
+\end{Cpp}
+

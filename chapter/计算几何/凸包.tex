@@ -1,0 +1,77 @@
+\section{凸包}
+凸包的定义是：所有内角均在 $[0, \pi]$ 的范围内的多边形为凸多边形，而对于给定点集
+，能包含所有点的最小凸多边形为这个点集的凸包。
+
+凸包在周长上一定是最优的。
+
+\subsection{Andrew 求凸包} \label{subsec:Andrew求凸包}
+首先先排序，那么我们可以知道第一个和最后一个点均在凸包上。我们逆时针走，应该均是
+向左转。如果向右转，那么很明显说明当前点不在凸包上。
+
+我们可以维护上下凸壳。
+
+代码如下：
+\begin{Cpp}
+vector<vector<int>>
+outerTrees(vector<vector<int>>& trees) {
+  vector<vec> ps;
+  for(auto &tree:trees) {
+    ps.push_back({tree[0],tree[1]});
+  }
+  sort(ps.begin(),ps.end());
+  
+  vector<int> ps_stk;
+  int ps_len=ps.size();
+  vector<bool> used(ps_len,false);
+  // 求下凸壳，从左到右遍历，第一个元素一定是下凸
+  // 壳的第一个元素。
+  ps_stk.push_back(0);
+  for(int i=1;i<ps_len;i++){
+    // 如果不是一个凸点，那么一定是前面的错！
+    while(ps_stk.size()>=2){
+      vec &pre=ps[ps_stk[ps_stk.size()-1]],
+        &ppre=ps[ps_stk[ps_stk.size()-2]];
+      int times_res=(pre-ppre).times(ps[i]-pre);
+      // 没有问题了，退出循环
+      if(times_res>=0) {
+        break;
+      }
+      // 坏了，pop_back。
+      used[ps_stk.back()]=false;
+      ps_stk.pop_back();
+    }
+    // 加入当前点
+    used[i]=true;
+    ps_stk.push_back(i);
+  }
+  // 求上凸壳，从右向左遍历，最后一个元素一定是上
+  // 凸壳的第一个元素（之前已经添加）。
+  for(int i=ps_len-2;i>=0;i--) {
+    if(used[i]) continue;
+    while(ps_stk.size()>=2) {
+      vec &pre=ps[ps_stk[ps_stk.size()-1]],
+        &ppre=ps[ps_stk[ps_stk.size()-2]];
+      int times_res=(pre-ppre).times(ps[i]-pre);
+      // 没有问题了，退出循环
+      if(times_res>=0) {
+        break;
+      }
+      // 坏了，pop_back。
+      used[ps_stk.back()]=false;
+      ps_stk.pop_back();
+    }
+    // 加入当前点
+    used[i]=true;
+    ps_stk.push_back(i);
+  }
+  vector<vector<int>> res;
+  for(int i=0;i==0||i<ps_stk.size()-1;i++) {
+    vec &element=ps[ps_stk[i]];
+    res.push_back({element.x,element.y});
+  }
+  return res;
+}
+\end{Cpp}
+
+\subsection{Graham 求凸包}
+

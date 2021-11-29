@@ -1,0 +1,26 @@
+\section{矩形的幂}
+\label{sec:矩阵的幂}
+
+矩阵快速幂见章节 \ref{sec:矩阵快速幂}
+
+给定一个矩形，我们可以利用特征向量来求取它的幂（特征向量见 \ref{sec:特征向量}
+章）。
+
+我们假设矩形 $\MATID A$ 的特征向量是 $\vec x$ 和 $\vec y$，那么我们有：\[
+\begin{aligned}
+    \MATID A(\vec x + \vec y) = &{} \MATID A \vec x + \MATID A \vec y \\ = &{} a
+    \vec x + b \vec y
+\end{aligned}
+\]
+
+那么有：\[
+\begin{aligned}
+    \MATID A^n (\vec x + \vec y) = &{} \MATID A^n \vec x + \MATID A^n \vec y \\
+    = &{} a^n \vec x + b^n \vec y
+\end{aligned}
+\]
+
+所以首先我们得求出特征向量（见 \ref{sec:特征向量} 章）$\vec x$ 和 $\vec y$。然后
+我们自然能求出 $a$ 和 $b$ 了。
+
+TODO

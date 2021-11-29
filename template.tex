@@ -1,0 +1,49 @@
+\documentclass[a4paper, 9pt]{ctexbook}
+
+% All packages are used and only used in template.tex, and are all in
+% `./package/` dir. All packages' frist character are uppercased.
+\usepackage{package/Predef}
+
+\usepackage{package/Cpp}
+\usepackage{package/Font}
+\usepackage{package/List}
+\usepackage{package/Math}
+\usepackage{package/PageSize}
+\usepackage{package/Table}
+\usepackage{package/TikZ}
+\usepackage{package/TwoColumn}
+\usepackage{package/Url}
+
+% Base infomation
+\title{Soochow University ICPC Template\thanks{本文档采取 CC-BY 协议}}
+\author{Peterlits Zo}
+
+\begin{document}
+
+% Title and TOC
+\maketitle
+
+\twocolumn
+\chapter*{目录}
+\tableofcontents
+\newpage
+
+% Chapters are all in `./chapter/` dir.
+\input{chapter/常见出错.tex}
+\input{chapter/算法基础/_.tex}
+\input{chapter/博弈论/_.tex}
+\input{chapter/初等数学/_.tex}
+\input{chapter/多项式/_.tex}
+\input{chapter/字符串/_.tex}
+\input{chapter/计算几何/_.tex}
+\input{chapter/组合数学/_.tex}
+\input{chapter/代数.tex}
+\input{chapter/动态规划/_.tex}
+\input{chapter/图论/_.tex}
+\input{chapter/随机算法.tex}
+\input{chapter/线性代数/_.tex}
+\input{chapter/数据结构/_.tex}
+\input{chapter/附录/_.tex}
+
+\end{document}
+

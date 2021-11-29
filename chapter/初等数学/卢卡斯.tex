@@ -1,0 +1,91 @@
+\section{卢卡斯} \label{sec:卢卡斯}
+这里使用来给组合数取模的定理。一般用于模数是一个比较小的素数（一般在 $10^5$ 以内
+），而组合数的因变量太大的情况的。其结论为：\[ {n \choose m} \bmod p = {\lfloor
+        n / p \rfloor \choose \lfloor m / p \rfloor} \cdot {n \bmod p \choose m
+\bmod p} \bmod p \]
+
+那么有模板如下：
+\begin{Cpp}
+ll lucas(ll n,ll m,ll p){
+  if(m=0)return 1;
+  return (C(n%p,m%p,p)*lucas(n/p,m/p,p))%p;
+}
+\end{Cpp}
+
+
+\subsection{卢卡斯的证明}
+我们能推导出来 ${p \choose n} \bmod p = [n = 0 \lor n = p]$。进而有：\[
+    (a + b)^p = \sum^{p}_{n = 0} {p \choose n} a^n b^{p - n} \equiv a^p + b^p
+    \pmod n
+\]
+虽然推导可以不用费马小定理（见章节 \ref{sec:费马小定理}），但是如果用的话，感觉
+推导起来会更快一点，但是正是没有用到黑马小定理，所以它也可以用来搞多项式哦。
+
+我们可以用二项式来进行证明。那么 ${n \choose m}$ 就是 $(1 + x)^n$ 的第 $m$ 次项
+的系数。那么有：\begin{align*}
+    (1 + x)^n & \equiv (1 + x)^{p\lfloor n / p \rfloor} \cdot (1 + x)^{n \bmod p} \\
+              & \equiv (1 + x^p)^{\lfloor n / p \rfloor} \cdot (1 + x)^{n \bmod p}
+              \pmod p
+\end{align*}
+
+那么前面的东西共享 $p$ 倍数，后面的贡献 $p$ 余数，即可。
+
+
+\subsection{素数在组合数中的幂次}
+我们需要知道几个知识点：
+\begin{itemize}
+    \item $n!$ 的 $p$ 的幂次为：$\sum_{j \ge 1} \lfloor n / p^j \rfloor$。
+    \item 我们可以记为：$\nu_p(n!) = \sum_{j \ge 1} \lfloor n / p^j \rfloor = {n
+        - S_p(n) \over p - 1}$。
+    \item $\nu_p({n \choose m}) = {S_p(n) + S_p(m - n) - S_p(m) \over p - 1}$。
+\end{itemize}
+
+其中 $S_p(n)$ 为在 $p$ 进制下各个位的数字相加的值/
+
+
+\subsection{扩展卢卡斯}
+${n \choose m} \bmod p$ 可以用卢卡斯来搞，但是模数不一定是一个素数，可能是一个合
+数 $n$。那么 $n = \prod p_i^{t_i}$。
+
+这个时候，如果我们能求出来 ${n \choose m} \bmod p_i^{t_i}$，那么自然而然我们就能
+用 CRT（见章节 \ref{sec:中国剩余定理}）来搞定它了。
+
+现在的问题就在于如何求得 ${n \choose m} \bmod p^t$。这个问题进一步分解就是求模
+$p^t$ 下的 $n!$ 和它的逆元，但是根据裴蜀定理（见章节 \ref{sec:裴蜀定理}），这个
+逆元不一定解得出来，但是根据组合数，其一定有一个整数解。
+
+那么我们有 ${n \choose m} \equiv {n! \over m! (n - m)!} \pmod p^t$，令分子分母同
+时除以 $p$ 知道他们都和 $p^t$ 互素，有：\[
+    \frac{\frac{n!}{q^x}}{\frac{m!}{q^y}\frac{(n-m)!}{q^z}}q^{x-y-z} \bmod q^k
+\]
+这样，我们从需要求解 $n! \bmod n$ 变成了求 ${n! \over q^x} \bmod q^k$ 了！！哈哈
+。
+
+我们不妨也考虑一下 $22! \bmod 3^2$ 的求解过程。
+\begin{enumerate}
+    \item 首先先把 $p = 3$ 的倍数给搞出来，有：\begin{align*}
+        22! & = p^{\lfloor n/p \rfloor} \times \lfloor n/p \rfloor! \times (n!)_p \\
+            & = 3^7 \times 7! \times (22!)_3 \\
+            & = (3^2 \times 2! \times (7!)_3) \times 3^7 \times (22!)_3 \pmod {3^2}
+    \end{align*}
+    \item 既然可以递归求解 $\lfloor n/p \rfloor!$，那么我们只需要知道怎么求解
+        $p^{\lfloor n/p \rfloor}$ 和 $(n!)_p$ 就好了。而正好 $p^{\lfloor n/p
+        \rfloor}$ 可以用快速幂（见章节 \ref{sec:快速幂}）（应该不需要欧拉降幂吧
+        ？欧拉降幂见章节 \ref{sec:欧拉定理}）。
+    \item 现在我们只需要求解 $(22!)_3 \bmod 3^2$ 了。我们可以用威尔逊定理（见章
+        节 \ref{sec:威尔逊定理}）来求解它，那么像这种东西我们就能得到 \[
+            {\left(\prod_{i,(i,q)=1}^{q^k}\!\!\!i\right)}^{\left\lfloor\frac{n}{q^k}\right\rfloor}
+            \!\!\!
+            \cdot \prod_{i,(i,q)=1}^{n\bmod q^k}\!\!\!i
+        \]。
+\end{enumerate}
+
+综上，我们平凡化：\[ \frac{n!}{q^{\left\lfloor\frac{n}{q}\right\rfloor}} =
+    \left(\left\lfloor\frac{n}{q}\right\rfloor\right)! \cdot
+    {\left(\prod_{i,(i,q)=1}^{q^k}\!\!\!i\right)}^{\left\lfloor\frac{n}{q^k}\right\rfloor}
+    \!\!\!
+    \cdot \prod_{i,(i,q)=1}^{n\bmod q^k}\!\!\!i \]
+
+然后第一项的阶乘也这么搞。即可。
+
+

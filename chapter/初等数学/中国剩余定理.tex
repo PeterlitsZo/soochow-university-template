@@ -1,0 +1,97 @@
+\section{中国剩余定理} \label{sec:中国剩余定理}
+
+中国剩余定理是用来求解一元线性同余方程组的算法。
+
+对于：
+$$\begin{cases}
+    x \equiv a_1 \pmod {n_1}, \\
+    x \equiv a_2 \pmod {n_2}, \\
+    \quad \vdots              \\
+    x \equiv a_k \pmod {n_k}, \\
+\end{cases}$$
+
+我们如果需要求出 $x$（首先需要注意的是，要不然 $x$ 有无穷多解，要不然没有解，故
+中国剩余定理只给出最小解，或者说，模 $\lcm(\{n_i\})$ 下的唯一解），那么我们需要
+遵守下列算法流程：
+\begin{enumerate}
+    \item 计算 $n = n_1 \cdot n_2 \cdot \cdots \cdot n_k$。
+    \item 对于第 $i$ 个方程，计算：
+        \begin{enumerate}
+            \item 令 $m_i = {n \over n_i}$。
+            \item 计算 $m_i$ 在 $n_i$ 下的逆元 $m_i ^ {-1}$。
+            \item 计算 $c_i = m_i m_i^{-1}$，注意不要取模。
+        \end{enumerate}
+    \item 解为：$x \equiv \sum_{i=1}^k a_i c_i \pmod n$。
+\end{enumerate}
+
+参考代码如下（其中扩展欧几里德见章节 \ref{subsec:扩展欧几里德}）：
+\begin{Cpp}
+// 其中 k 代表了 a 和 r 的长度。其中 a 是余数，而
+// r 是模。
+ll CRT(int k,ll a[],ll r[]){
+  ll n,ans=0;
+  for(int i=0;i<k;i++) n=n*r[i]:
+  for(int i=0;i<k;i++) {
+    ll m=n/r[i],b,y;
+    exgcd(m,r[i],b,y);
+  }
+}
+\end{Cpp}
+
+\subsection{CRT 的应用}
+有时候我们可能需要对一个答案取模，而恰好这个模可能，不是一个质数，而是两两互不相
+同的质数的乘积。那么我们可以分解分别求答案，然后用 CRT 进行合并。
+
+当然，如果模数两两不互质的情况下，可能就 G 了。但是也并非没有办法。那么我们分情
+况讨论：
+\begin{itemize}
+    \item 两个方程。那么我们不妨假设 $a \equiv r_1 \pmod {m_1}$ 和 $a \equiv r_2
+        \pmod {m_2}$，那么我们有：\[ a = b_1 m_1 + r_1 = b_2 m_2 + r_2 \]这说明
+        了 $m_1 b_1 - m_2 b_2 = r_2 - r_1$。当 $(m_1, m_2) \mid r_2 - r_1$的时候
+        ，说明我们可以通过扩展欧几里德（见章节\ref{subsec:扩展欧几里德}）来求出
+        一组可行的 $b_1$ 和 $b_2$。
+
+        那么综上，$a$ 满足：\[a \equiv m_1 b_1 + r_1 \pmod{\lcm(m_1, m_2)}\]。
+    \item 多个方程。两两地做即可。
+\end{itemize}
+
+\subsection{Garner 算法}
+我们提到 CRT 的解在 $\lcm(\{n_i\})$ 下是一一对应的。这是因为 CRT 的解再分别取模
+，就能得到条件，而条件只能得到唯一的解，这是一个双射关系。
+
+所以我们可以将一个数映射到一堆数上。\[
+    \left\{
+        \begin{aligned}
+            a \equiv{}&{} a_1 \pmod {p_1} \\
+            a \equiv{}&{} a_2 \pmod {p_2} \\
+              \vdots{}&{} \\
+            a \equiv{}&{} a_k \pmod {p_k} \\
+        \end{aligned}
+    \right.
+\]
+
+那么如果\[
+a = x_1 + x_2 p_1 + x_3 p_1 p_2 + \ldots + x_k p_1 \ldots p_{k-1}
+\]
+
+则令 $r_{i,j}$ 为 $p_i$ 在模 $p_j$ 意义下的逆，有：\[
+p_i \cdot r_{i,j} \equiv 1 \pmod{p_j}
+\]
+
+那么有：\[
+    x_k=(\ldots ((a_k-x_1)r_{1,k}-x_2)r_{2,k} \ldots)r_{k-1,k} \bmod p_k
+\]
+
+代码如下：
+\begin{Cpp}
+for(int i=0;i<k;++i) {
+  x[i]=a[i];
+  for(int j=0;j<i;++j) {
+    x[i]=r[j][i]*(x[i]-x[j]);
+    x[i]=x[i]%p[i];
+    if(x[i]<0)x[i]+=p[i];
+  }
+}
+\end{Cpp}
+
+虽然不太懂这玩意有啥用，但是还是抄下来了。

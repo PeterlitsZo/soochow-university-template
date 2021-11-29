@@ -1,0 +1,217 @@
+\section{后缀自动机和后缀数组} \label{sec:后缀自动机和后缀数组}
+后缀自动机，又叫做 SA。它需要用到两个数组：$\mathtt{sa}_i = \mathrm{sa}(i)$ 和
+$\mathtt{rk}_i = \mathrm{rk}(i)$。
+
+其中 $\mathrm{sa}(i)$ 函数表示了第 $i$ 小的后缀的起始下标（从 $1$ 开始），而
+$\mathrm{rk}(i)$ 函数表示了从 $i$ 其实的后缀的排名。所以有：
+$$
+\mathrm{sa}(\mathrm{rk}(i)) = \mathrm{rk}(\mathrm{sa}(i)) = i
+$$
+
+\subsection{求取 $\mathtt{sa}$ 数组}
+朴素算法是 $\FnO(n^2\lg n)$。所以不考虑，求 $\mathtt{sa}$ 数组应当使用的是倍增法
+和倍增法的优化版本。
+
+\subsubsection{倍增法}
+我们考虑一下如果 $n = 5$，那么将字符串 \verb|'abc'| 扩展成 \verb|'abc\0\0'| 并不
+会影响结果。因此，我们可以将所有的后缀变成长度为 $\ge n$ 的字符串。那么我们现在需要
+解决的问题就是：我们需要求所有长度为 $\ge n$ 的字符串排序后的名次。
+
+我们需要注意一个点，即不可能有两个后缀相同，那么也就是说 $\forall i \neq j,
+\mathtt{sa}_i \neq \mathtt{sa}_j$。
+
+然后我们考虑一下，对于长度为 $w$ 的两个串。如果串 $s_1$ 和 $s_2$ 的左侧不一致，
+那么我们只需要考虑左侧就行了，并不需要考虑右恻。如果长度为 $w / 2$ 的串的
+$\mathtt{rk}$ 值都知道的话复杂度就会很小，其时间复杂度 $\FnO(n \lg n)$。分治下去
+，最终的时间复杂度为 $\FnO(n \lg^2 n)$。是一个可以接受的时间复杂度。
+
+因此代码可以如下：
+\begin{Cpp}
+// 需要定义整数 n（字符串的长度），数组 sa，rk，
+// oldrk 这三个长度起码 (n<<1)），字符串 s（从 1
+// 开始）（从 0 开始可以，见一些注释）。
+
+void get_sa(){
+  // 先初始化 w = 1 的情况。
+  // [从 0 开始] for(i=0; i<n; ...
+  for(int i=1;i<=n;i++)sa[i]=i,rk[i]=s[i];
+  // 主循环。hw 表示一半的 w。很明显，n >= 2 的时
+  // 候，就一定会进入循环中。
+  for(int hw=1;hw<n;hw<<=1){ 
+    // 用 rk 排序来排序 sa。
+    // [从 0 开始] sort(sa, sa+n, ...
+    sort(sa+1,sa+n+1,[&](int x,int y){
+      return rk[x]==rk[y]
+        ?rk[x+hw]<rk[y+hw]
+        :rk[x]<rk[y];
+    });
+    // 我们现在应该搞好 rk。
+    memcpy(oldrk,rk,sizeof(int)*(n+5));
+    // 冷知识：p 等于啥不影响 sa，不过会影响 rk。
+    // [从 0 开始] rk[sa[0]]=0，然后 i 枚举到 i<n 即可。
+    for(int p=0,i=1; i<=n;i++){
+      // 只有 oldrk 相同，我们才需要考虑它有没有
+      // 变的不一样的可能性。如果溢出了，那就到达
+      // '\0\0...' 空间了，oldrk 的对应值是 0。符
+      // 合结果。
+      if(oldrk[sa[i]]==oldrk[sa[i-1]] &&
+        oldrk[sa[i]+hw]==oldrk[sa[i-1]+hw]){
+        rk[sa[i]]=p;
+      }else{
+        rk[sa[i]]=++p; // 新的 p！！保证 rk 是从 1 开始
+      }
+    }
+  }
+}
+\end{Cpp}
+
+注意，这里因为有倍增和普通排序，所以复杂度有两个 $\lg$，我们可以使用基数排序把
+复杂度降低到 $\FnO(n \lg n)$。如果可以的话用下面的代码，毕竟搞了好久，才过了。
+
+\subsubsection{基数排序的倍增法}
+shift，感觉只有笨蛋才会字符串从 1 开始。我写了基数排序，但是常数很大，这里是我在
+OI-wiki 上抄的，这个笨蛋的字符串从 1 开始，西吧：
+\begin{Cpp}
+// int n,sa[LEN],rk[LEN],oldrk[LEN<<1];
+// char s[LEN];
+
+bool cmp(int x,int y,int w) {
+  return oldrk[x]==oldrk[y]
+      && oldrk[x+w]==oldrk[y+w];
+}
+
+{
+  static int id[LEN], px[LEN], cnt[LEN];
+  // m 是一开始桶的大小，只有范围小才能用基数排序
+  int m=300,p,i;
+  // s 需要从 1 开始。
+  n=strlen(s+1);
+  // 记录桶的大小，并且初始化 rk。
+  memset(rk,0,sizeof(int)*(n*2+5));
+  for(i=0;i<=n;++i) cnt[i]=0;
+  for(i=1;i<=n;++i) ++cnt[rk[i]=s[i]];
+  // cnt：桶的大小 -> 桶的起始地址（最多 m=300 个
+  // 桶，一开始的时候）
+  for(i=1;i<=m;++i) cnt[i]+=cnt[i-1];
+  // 从桶的末尾放入。
+  for(i=n;i>=1;--i) sa[cnt[rk[i]]--]=i;
+
+  // 开始倍增。m 会变化！！-> 桶的多少
+  for(int w=1;  ;w<<=1,m=p){
+    // 搞定 sa 后半部分
+    // ----------------------------------------
+    // 搞定后半部分空串的对应下标排序。
+    for(p=0,i=n;  i>n-w;--i) id[++p]=i;
+    // 指定其他的后半部分非空串的对应下标。
+    for(i=1;i<=n;++i)
+      if(sa[i]>w) id[++p]=sa[i]-w;
+    // 基数排序，px[i] = rk[id[i]]
+    // 搞定 sa 前半部分
+    // ----------------------------------------
+    memset(cnt,0,sizeof(int)*(m+5));
+    // 令 px 为后半部分第 i 小的前半部分排名。
+    // 初始化桶。
+    for(i=1;i<=n;++i) ++cnt[px[i]=rk[id[i]]];
+    for(i=1;i<=m;++i) cnt[i]+=cnt[i - 1];
+    // 把 id[i] 倒放入桶末尾，根据前半部分的排名。
+    for(i=n;i>=1;--i) sa[cnt[px[i]]--] = id[i];
+    // 记录 rk。
+    // ----------------------------------------
+    // 根据原来 rk 和 sa 来搞定 rk。
+    // 我感觉 sizeof(int) * (n + 16) 也可以
+    memcpy(oldrk,rk,sizeof(int)*(n*2+5));
+    for(p=0,i=1; i<=n;++i)
+      rk[sa[i]]=cmp(sa[i],sa[i-1],w) ?p:++p;
+    if(p==n){
+      for(int i=1;i<=n;++i) sa[rk[i]]=i;
+      break;
+    }
+  }
+}
+\end{Cpp}
+
+\subsubsection{应用方向}
+\paragraph{查找字符串}
+虽然我们可以用万能的 KMP 在 $\FnO(n+m)$ 的时间复杂度内找到对应的字符串，但是在设
+计多个模式串的话，或许一个后缀数组会更有帮助。我们知道，一个子字符串必定是一个后
+缀的前缀。那么我们只需要用二分的方法在排好序的后缀中查找模式串对应的位置，并检查
+前缀是否相同。
+
+我感觉复杂度应该是 $\FnO(n \lg n + k m \lg n)$，分别是处理出一个后缀数组和 $k$
+次查找得到的复杂度之和。
+
+\paragraph{求解 LCP}
+寻找后缀 $i$ 和后缀 $j$ 的最长前缀。在 OI-wiki 上定义了一个 height 数组%
+\footnote{不过我在 Codeforces 的 EDU 中学习的时候，他们把它命名为 {\ttfamily lcp} 数组。}，就可以
+干这件事情。不过暴力根据 SA 数组求解 height 数组效率不是很高，我们有一个小 trick
+：那就是，如果 $i$ 和 $\textrm{sa}_{\textrm{rk}_{i} + 1}$ （即：下一个大于 $i$
+的字符串下标）的 height 求出来了，那么我
+们就能很轻松的求出 $i + 1$ 到 $\textrm{sa}_{\textrm{rk}_{i+1} + 1}$ 和中间所有的字
+符串之间的 height 值 --- 因为我们可以不用再重复进行那么多比较了。
+
+按理来说，我们可以保证 height 数组求解的复杂度为 $\FnO(n \lg n)$。
+
+代码如下：
+\begin{Cpp}
+// int ht[LEN];
+
+void get_height(){
+  int k=0;
+  for(int i=1;i<=n;i++){
+    // 找下一个排名小的。
+    int nxti=sa[rk[i]-1];
+    while(S[i+k]==S[nxti+k]) k++;
+    ht[rk[i]]=k;
+    k=max(k-1,0);
+  }
+}
+\end{Cpp}
+
+如上，我们需要求解的时候，我们需要找区间最小值，区间最小值是 RMQ，我们可以使用
+ST 表（见 \ref{sec:ST表} 章），经过测试的代码如下：
+\begin{Cpp}
+int st[LEN][20];
+void get_st(){
+  // 可能需要初始化
+  for(int i=1;i<n;i++){
+    st[i][0]=ht[i+1];
+  }
+  // 向下取整，因为我们不需要考虑溢出的情况。
+  int dp=(int)log2(n);
+  for(int j=1,stp=1;j<=dp;++j,stp<<=1){
+    for(int i=1;i<n;i++){
+      st[i][j]=min(st[i][j-1],st[i+stp][j-1]);
+    }
+  }
+}
+
+// 闭区间
+inline int st_query(int l,int r){
+  // 保证 l < r。
+  if(r<l)swap(l,r);
+  int lv=log2(r-l);
+  return min(st[l][lv],st[r-(1<<lv)][lv]);
+}
+\end{Cpp}
+
+而求解 $i$ 和 $j$ 的 LCP 只需要：
+\begin{Cpp}
+int lcp =SA[0].st_query(SA[0].rk[i], SA[0].rk[j]);
+\end{Cpp}
+
+\paragraph{求解 LCS}
+和上个段落差不多，这个需要求解最长公共后缀，那么我们只需要翻转求前缀：
+\begin{Cpp}
+for(int i=1;i<=n;i++)
+  SA[1].S[i]=SA[0].S[n-i+1];
+SA[1].S[n+1]='\0';
+
+SA[1].get_sa();
+SA[1].get_ht();
+SA[1].get_st();
+\end{Cpp}
+
+查找的时候，我们需要查找 $i$ 和 $j$ 的 LCS 的时候，只需要：
+\begin{Cpp}
+int lcs =SA[1].st_query(SA[1].rk[n-i+1], SA[1].rk[n-j+1]);
+\end{Cpp}

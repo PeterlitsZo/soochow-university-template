@@ -1,0 +1,56 @@
+\section{斐波那契数}
+\label{sec:斐波那契}
+
+组合数学的斐波那契运用见章节 \ref{sec:组合数学斐波那契}。
+
+斐波那契数有几个性质：
+\begin{enumerate}
+    \item 存在一个斐波那契数是另外两个斐波那契数的乘积。
+\end{enumerate}
+
+\subsection{通项公式}
+斐波那契数满足：
+\[
+    \begin{bmatrix}
+        F_{n+2} \\ F_{n+1}
+    \end{bmatrix} =
+    \begin{bmatrix}
+        1 & 1 \\
+        1 & 0 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        F_{n+1} \\ F_n
+    \end{bmatrix}
+\]
+
+而我们有：
+\[
+    \begin{bmatrix}
+        F_2 \\ F_1
+    \end{bmatrix} =
+    \begin{bmatrix}
+        1 \\ 1
+    \end{bmatrix}
+\]
+
+那么有：
+\[
+    \begin{bmatrix}
+        F_n \\ F_{n-1}
+    \end{bmatrix} = 
+    \begin{bmatrix}
+        1 & 1 \\
+        1 & 0 \\
+    \end{bmatrix} ^{n-2}
+    \begin{bmatrix}
+        1 \\ 1
+    \end{bmatrix}
+\]
+
+这里矩阵的幂，我们可以参考 \ref{sec:矩阵的幂} 章节中提到的方法来求解矩阵的幂。不
+过我们也可以使用矩阵快速幂来做它。
+
+所以我们有：\[
+    F_n = {\sqrt 5 \over 5} \left[ \left({1 + \sqrt 5 \over 2}\right)^n +
+    \left({1 - \sqrt 5 \over 2}\right)^n \right]
+\]

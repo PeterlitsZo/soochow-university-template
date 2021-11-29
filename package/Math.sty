@@ -1,0 +1,49 @@
+\RequirePackage{amsmath}
+\RequirePackage{mathtools}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+
+% 函数名（不带 Fn 前缀）
+\newcommand\lcm{\mathrm{lcm}}
+
+% 函数名（带 Fn 前缀）
+\def\FnDegree{\mathrm{degree}}
+\def\FnDegree{\mathrm{degree}}
+\def\FnDet{\mathrm{det}}
+\def\FnMex{\mathrm{mex}} \def\mex{\FnMex}
+\def\FnO{\mathcal{O}}
+\def\FnOrd{\mathrm{ord}}
+\def\FnSG{\mathrm{SG}} \def\SG{\FnSG}
+\def\FnSgn{\mathrm{sgn}}
+\def\FnXor{\mathrm{xor}} \def\xor{\FnXor}
+
+% 操作
+\def\OpOr{\mathrm{\,or\,}}
+\def\OpAnd{\mathrm{\,and\,}}
+\def\OpXor{\mathrm{\,xor\,}}
+
+% 缩写
+\def\VEC#1{\overrightarrow{#1}}
+\def\MATID#1{\mathbf{#1}}
+
+% 斯大林数
+\newenvironment{StrI}{
+    \begin{bmatrix}
+}{
+    \end{bmatrix}
+}
+\newenvironment{StrII}{
+    \begin{Bmatrix}
+}{
+    \end{Bmatrix}
+}
+\newcommand\CmdStrI[2]{
+    \begin{StrI}
+        #1 \\ #2
+    \end{StrI}
+}
+\newcommand\CmdStrII[2]{
+    \begin{StrII}
+        #1 \\ #2
+    \end{StrII}
+}

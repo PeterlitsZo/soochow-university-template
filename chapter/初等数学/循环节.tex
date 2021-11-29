@@ -1,0 +1,119 @@
+\section[循环节]{循环节\protect\footnote{这里大部分参考了
+\url{https://blog.csdn.net/bogedaye/article/details/109658038}。李如一的视频，非
+常不错，由浅入深，十分好用。}}
+\label{sec:循环节}
+
+我们只研究两种循环序列。一种是 $A = \{a \times i \bmod n\}$，一种是 $A = \{a^i
+\bmod n\}$。
+
+它们肯定会从某一个节点开始进入循环。判断序列开头是否也在循环中也很重要。
+
+根据纯循环和混循环的定义（见章节 \ref{sec:纯循环和混循环}），我们可以知道 $\{a
+\times i \bmod n\}$ 模型的一定是纯循环，即给定第 $i$ 个元素 $A_i$ 的前驱为
+$A_{i-1} = (A_i - a) \bmod n$。同理$\{a^i \bmod p\}$ 一定是纯循环（因为在模 $p$
+下 $a$ 一定有逆元）。
+
+但是 $\{a^i \bmod n\}$ 而言，$(a, n)$ 可能不等于 $1$，这也说明了它可能没有对应的
+逆元。而找不到逆元，说明存在一个元素可能有两个前驱。比如说 $4^i \bmod 4$ 得到的
+序列就是$\{0, 1, 1, 1, \ldots\}$。
+
+
+
+\subsection{$a \times i \bmod n$}
+对于一个序列 $A = \{a \times i \bmod n\}$，它的循环节长度是 $n \over (a, n)$。
+
+那么我们可以知道，如果 $a \times x \equiv b \pmod n$，那么对于 $x \in [0, n)$ 这
+个范围内，如果 $(a, n) \mid b$，那么有解。如果 $b \nmid (a, n)$，那么它没有解。
+
+这样子，$A$ 全部都是 $(a, n)$ 的倍数。而 $[0, n)$ 中正好有 $n \over (a, n)$ 个其
+倍数。因为它是纯循环，所以它的循环节长度就是 $n \over (a, n)$。
+
+
+
+\subsection{$a^i \bmod n$}
+\subsubsection{$n$ 是素数的情况}
+我们先研究弱化情况，即：$A = \{a^i \bmod p\}$。这会让我们想起费马小定理（见章节
+\ref{sec:费马小定理}），即 $a^{p-1} \equiv 1 \pmod p$。这说明循环节最多是 $p - 1$。
+因为它也是纯循环，所以循环节是 $p - 1$ 的一个约数。
+
+我们可以这么来进行记忆：对于 $a \neq 0$，我们有 $a^i \not\equiv 0 \pmod p$（因为
+$a$ 再怎么乘，也不可能是 $p$ 的倍数），那么它最多只会轮询 $[1, p-1]$ 共 $p - 1$
+个数。这个记忆方法没什么道理，但是告诉了我们循环节是 $p - 1$。
+
+
+\subsubsection{$(a, n) = 1$ 的情况}
+扩展的普通情况，即：$A = \{a^i \bmod n\}$。我们首先注意到有 $A_i = A_{i-1}
+\times a \bmod n$，那么如果 $A$ 中连续出现了两个相同的数，那么它一定会循环。
+
+如果 $(a, n) = 1$，那么我们有 $(a^i \bmod n, n) = 1$。那么 $A$ 中最多也只有
+$\varphi(n)$ 个不同的数。
+
+根据这个我们可以推导出欧拉定理（见章节 \ref{sec:欧拉定理}），即 $a^{\varphi(n)}
+\equiv 1 \pmod n, (a, n) = 1$。
+
+
+\subsubsection{普遍情况}
+现在抛掉所有的附加条件。那么按理 $A$ 它可能对应着一个混循环，也可能对应一个纯循
+环。但是我们在一开始已经提出了一个反例，那么它不可能是一个纯循环，这说明了它一定
+是一个混循环。
+
+先别慌，我们可以假设它有条件 $(A_i, n) = (A_{i+1}, n) = d$，那么对于 $a_i = {A_i
+\over d}$ 而言，在模 $n \over d$ 的情况下，$a_i$ 就能退化到之前 $(a, n) = 1$ 的
+情况，这个时候它的循环节长度就是$\varphi({n \over d})$。
+
+好吧，上面的普遍情况一点也不普遍。我们需要一个 $(A_i, n)$ 稳定的条件才能推出这个
+。那要是不成立呢？我们用反证法尝试证明一下。
+
+首先我们有发现 $(A_{i-1}, n) \mid (A_i, n)$。
+
+而它一定是一个混循环，也就是说一定在某一个时候发生了 $(A_{i-1}, n) = (A_i, n)$，
+而 $(A_{i-1}, n) = (A_i, n)$ 能推出来 $(A_i, n) = (A_{i+1}, n)$。
+
+如图 \ref{fig:a^i mod n 的混循环} 所示，混循环的角角，其长度最长为 $\lg n$，而混
+循环的循环节长度，一定是 $\varphi(n \over d)$，也同时是 $\varphi(n)$ 的一个约数。
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    \foreach \angle / \label in {210/c, 180/d, 150/e, 120/f, 90/g, 60/h, 30/i, 0/j,
+    330/k, 300/l, 270/m} {
+        \node[TNode] (\label) at (\angle:2cm) {$\label$};
+    }
+    \foreach \label [count=\count] in {b, a} {
+        \node[TNode] (\label) at (210:2cm) [xshift=0.57 * \count cm, yshift=-1 * \count cm] {$\label$};
+    }
+    \foreach\nxt[count=\nxti, remember=\nxt as \bef (initially c)] in {d, e, f, g, h, i, j, k, l, m, c} {
+        \draw[->] (\bef) to[bend left=15] (\nxt);
+    }
+    \foreach \bef / \nxt in {a/b, b/c} {
+        \draw[->] (\bef) to (\nxt);
+    }
+\end{tikzpicture}
+\caption{$a^i \bmod n$ 的混循环}
+\label{fig:a^i mod n 的混循环}
+\end{figure}
+
+根据这个，我们就可以推导出扩展欧拉定理（见章节 \ref{subsec:扩展欧拉定理}），那么
+有\[
+    a^i \equiv \begin{cases}
+        a^i,                & i \le \varphi(n) + T, \\
+        a^{i - \varphi(n)}, & i > \varphi(n) + T.
+    \end{cases}
+\]
+
+
+\subsection{求解模方程}
+\subsubsection{方程 $a \times x \equiv b \pmod n$}
+这个还比较简单，我们先看看它有没有解。如果有解，那么一定有 $(a, n) \mid b$，反之
+如果 $(a, n) \nmid b$，那么它一定没有解。
+
+这样的话，那么我们可以利用扩展欧几里德（见章节 \ref{subsec:扩展欧几里德}）解出来
+。
+
+\subsubsection{方程 $a^x \equiv b \pmod n$}
+朴素思想是利用扩展欧拉定理（见章节 \ref{subsec:扩展欧拉定理}）来降幂，这样子复杂
+度就是 $\FnO(\varphi(n))$。
+
+但是我们还有更加优秀的解法！那就是 BSGS 算法（见章节 \ref{sec:BSGS}）！哇哈哈。
+
+但是上面的适用于 $(a, n) = 1$ 的情况，如果不互素的话，那么它就会很难。

@@ -1,0 +1,23 @@
+% \cmd
+% #1: code
+%     can use macro \nam{<subcode>} to get <subcode>
+% cmd definetion
+\def\cmd#1{{%
+    \def\nam##1{$\langle$\textit{##1}$\rangle$}%
+    \tt#1}}
+
+% \IfNextChar
+% #1: the char for testing
+% #2: code for true
+% #3: code for false
+% #4: next char
+\makeatletter
+\newcommand{\IfNextChar}[4]{%
+  \edef\@nextchar{#4}%
+  \ifx#1#4\@empty\@empty
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+  {#2}{#3}%
+}

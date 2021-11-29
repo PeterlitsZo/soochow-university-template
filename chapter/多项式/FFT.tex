@@ -1,0 +1,98 @@
+\section{FFT}
+多项式最重要的一个部分就是 FFT，它能用于两个多项式相乘。比如我们有两个多项式：
+$$
+\begin{array}{l}
+    A(x) = a_{n-1} x^{n-1} + \ldots a_1 x + a_0 = \sum^{n-1}_{i=0} a_i x^i, \\
+    B(x) = b_{n-1} x^{n-1} + \ldots b_1 x + b_0 = \sum^{n-1}_{i=0} b_i x^i.
+\end{array}
+$$
+那么对应的，两个多项式的乘积为：
+$$
+\begin{aligned}
+    C(x) & = A(x) \times B(x) \\
+\end{aligned}
+$$
+其中的 $C(x)$ 中幂为 $k$ 的项，其对应的系数应该为：
+$$
+    \sum_{j=0}^{k} a_j b_{k-j}
+$$
+
+如上是朴素算法，这个算法的时间复杂度为 $O(n^2)$。很明显是不行的。虽然没有重复的
+运算（因此无法记忆化），但是计算的结构太相似了，根据这个相似性，我们可以构造出点
+值法表示的函数，之后再进行计算。即我们可以把 $A(x)$ 或者 $B(x)$ 转换为很多个点点
+。比如说 $\{(1, A(1)), (2, A(2)), \ldots (n + 1, A(n + 1))\}$。我们知道两个点能
+确定一条直线，以此类推，我们能解得 $\FnDegree(F) = n$ 对应的 $F$ 多项式，我们需要
+$n + 1$ 个点（如果常数的 $\FnDegree$ 映射到 $1$？不是很懂）。
+
+总之如果我们把多项式转换为点值表示法，那么我们就能快速算出两个多项式的积的点值表
+示法。现在问题已经转换为了如何快速的把一个多项式玩意从系数表示法变成点值表示法嗷
+，and 倒过来。
+
+具体怎么实现的就懒得一表了。
+
+\subsection{非递归 FFT 实现核心代码}
+\begin{Cpp}
+using comp=complex<double>;
+
+int up_2p(int a){
+  a--; for(int i:{1,2,4,8,16}) // 4*8 -> 2*16
+    a|=a>>i;
+  return a+1;
+}
+
+void fft(comp NUM[],int on){
+  for(int i=1;i<LEN;i++){
+    // 这 rev 玩意可以预处理。
+    rev[i]=(rev[i>>1]>>1)|(i&1?(LEN>>1):0);
+    if(i<rev[i])swap(NUM[i],NUM[rev[i]]);
+  }
+  for(int w=2;w<=LEN;w<<=1){
+    comp step(cos(2*M_PI/w),on*sin(2*M_PI/w));
+    for(int i=0;i<LEN;i+=w){
+      comp cur(1,0);
+      // 注意 cur *= step 中的符号是乘号哦。
+      for(int j=i;j<i+w/2; (j++,cur*=step)){
+        comp g=NUM[j],h=cur*NUM[j+w/2];
+        NUM[j]=g+h,NUM[j+w/2]=g-h;
+      }
+    }
+  }
+  if(on==-1)for(int i=0;i<LEN;i++)
+    NUM[i]/=LEN;
+}
+\end{Cpp}
+
+一些可能会有用的代码片段，首先是把一个多项式的各个复系数变成最近的实整系数，其中
+虚数的部分被舍弃掉了：
+\begin{Cpp}
+comp* normalpoly(comp A[]){
+  for(int i=0,tp;i<LEN;i++){
+    tp=int(A[i].real()+0.5);
+    // 把它归入上一位。。。可能不是必须的。
+    A[i+1]+=tp/10;
+    A[i]=tp%10;
+  }
+  return A;
+}
+\end{Cpp}
+
+这个代码片段可以把一个十进制数变成了一个多项式：
+\begin{Cpp}
+comp* toploy(comp A[],int value){
+  for(int i=0;i<LEN;i++)
+    A[i]=value%10, value/=10;
+  return A;
+}
+\end{Cpp}
+
+这个代码可以用于大数相乘的多项式相乘：
+\begin{Cpp}
+comp* times(comp A[],comp B[]){
+  fft(A, 1), fft(B, 1);
+  for(int i=0,tp;i<LEN;i++)
+    A[i]*=B[i];
+  fft(A, -1), fft(B, -1);
+  normalpoly(A);
+  return A;
+}
+\end{Cpp}

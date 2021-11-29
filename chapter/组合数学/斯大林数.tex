@@ -1,0 +1,43 @@
+\section{斯大林数}
+\label{sec:斯大林数}
+
+第三类斯大林数见章节 \ref{sec:拉赫数}。
+
+斯大林数分为两种。一般用来描述如何把元素分组的问题。其中一般而言第二类斯大林数更
+为普遍。
+
+\subsection{第二类斯大林数}
+第二类斯大林数解决的问题是：给定 $n$ 个互不相同的球，放到 $k$ 个相同的盒子里（非
+空），有多少种情况数，我们把它记为 $\CmdStrII{n}{k} = S(n, k)$。
+
+很明显有：\[
+\begin{gathered}
+    k = n \lor k = 1 \Rightarrow \CmdStrII{n}{k} = 1,\\
+    k > n \lor k = 0 \Rightarrow \CmdStrII{n}{k} = 0, \\
+\end{gathered}
+\]
+
+基本式如上，而递归式如下：\[
+    \CmdStrII{n}{k} = \CmdStrII{n-1}{k-1} + k \cdot \CmdStrII{n-1}{k}
+\]
+
+对于行的第二类斯大林数，我们一般把它写成 \[
+    \CmdStrII{n}{k} = {1 \over k!} \sum^{k}_{i=0} (-1)^i {k \choose i} (k - i)^n
+    % \begin{StrII}n \\ \fbox{k}\end{StrII} = \sum^m_{i=0} {i^n \over i!} {(-1)^{m-i}
+    % \over (m-1)!}
+\]
+
+而对于列而言我们有 $\begin{StrII}\fbox{n} \\ k\end{StrII}$：\[
+    S(x) = \sum_{i=0}^{\infty} \begin{StrII}i \\ k\end{StrII} x^i
+\] \[
+    S(x) = {x^m \over \prod^{m}_{i=1} (1 - ix)}
+\]
+
+这个需要分治 NTT。
+
+\subsection{第一类斯大林数}
+第二类斯大林数解决的问题是：给定 $n$ 个互不相同的球，放到 $k$ 个圆排列的盒子中。
+我们把它记作 $\CmdStrI{n}{k}$：\[
+    \CmdStrI{n}{k} = \CmdStrI{n-1}{k-1} + (n-1)\CmdStrI{n-1}{k}
+\]
+

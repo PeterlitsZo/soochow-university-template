@@ -1,0 +1,26 @@
+\section{数论分块} \label{sec:数论分块}
+数论分块主要是用来处理形如
+$$
+    \sum^{n}_{i=1} \lfloor{n \over i}\rfloor
+$$
+的式子。比如说如果 $n = 12$ 的话，那么它推导的数列就为：$\{12, 6, 4, 3, 2, 2, 1,
+1, 1, 1, 1, 1\}$，我们可以看到在 $\sqrt n$ 之后很明显的分块现象 --- 在接下来的
+$n - \sqrt n$ 个数中一共就只有 $\sqrt n$ 种数字。很明显，如果我们知道了每一个数
+字对应的出现个数，那么我们就能够得到它的和了。
+
+值的注意的是，数论分块要解决的问题和类欧几里德（见章节 \ref{sec:类欧几里德})类似
+。
+
+我们可以说，如果起始位置是 $l$，那么它的结束位置的下标为 $\left\lfloor\frac{n}{
+\left\lfloor{n \over l}\right\rfloor}\right\rfloor$。比如对于 $n = 12$ 而言，数
+字 $2$ 是从第 $5$ 个开始一直延续到第 $6$ 个。
+
+我们不妨令这个数为 $x$，那么它满足：$xl \le n < (x + 1)\cdot l$，所以 $\lfloor{n
+\over l}\rfloor$ 就表示了这个块对应的数字，而它的结束位置 $r$，首先是整数，其次
+满足：$rx \le n \land (r+1)\cdot x > n$，那么自然有：$r = \lfloor{n \over
+x}\rfloor = \left\lfloor\frac{n}{\left\lfloor{n \over
+l}\right\rfloor}\right\rfloor$。
+
+值的一提的是，如果数论分块包含了多个式子相乘，如 $\sum^{n}_{i=1} \lfloor{n \over
+i}\rfloor\lfloor{m \over i}\rfloor$ 等之类的，我们可以跳转到 $min(f(n, l), f(m,
+l))$ 即可。

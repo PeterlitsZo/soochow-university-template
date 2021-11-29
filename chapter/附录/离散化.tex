@@ -1,0 +1,13 @@
+\section{离散化}
+离散化的复杂度是 $\FnO(n \lg n)$：
+\begin{Cpp}
+// 假定待离散化的所有数据为 A
+int C[LEN];
+memcpy(C,A,sizeof(A));
+sort(C,C+n);
+int l=unique(C,C+n)-C;
+int L[LEN]; // 离散化结果
+for(int i=0;i<n;++i)
+  L[i]=lower_bound(C,C+l,A[i])-C;
+\end{Cpp}
+

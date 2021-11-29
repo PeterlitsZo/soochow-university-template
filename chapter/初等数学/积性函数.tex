@@ -1,0 +1,51 @@
+
+\section[积性函数]{积性函数\footnote{参考了很多 bilibili 上的 BV1H4411D7qo 视频
+和 OI-wiki。}}\label{sec:积性函数}
+积性函数分为普通的积性函数和完全积性函数。
+
+积性函数的定义如下：对于函数 $f$ 而言，满足下式的即为积性函数：
+$$
+\begin{cases}
+    f(1)  = 1,                                 \\
+    f(pq) = f(p) \cdot f(q), p, q \text{互质}. \\
+\end{cases}
+$$
+
+而完全积性函数而言，即使 $p$ 和 $q$ 不互质，式子 $f(pq) = f(p) \cdot f(q)$ 也是
+恒成立的。
+
+举例来说，欧拉函数 $\varphi(n)$，莫比乌斯函数 $\mu(n)$，$k$ 一定时的最大公约数
+$\gcd(n, k)$，这些都是积性函数\footnote{目前好像还没有证明欧拉函数。看了一些证明
+，都是循环论证，气死爷了。}。
+
+举例来说，如果 $k=12$，那么 $\gcd(60, 12) = \gcd(12, 12) \cdot \gcd(5, 12) = 12$
+。如果用算术基本定理而言的话，应该是很容易证明的。
+
+而对于完全积性函数，我们同样可以举例：恒等函数 $1(n) = 1$，元函数 $\epsilon(n) =
+[n = 1]$，和单位函数 $\mathrm{Id}(n)$。
+
+
+\subsection{积性函数的性质}
+如果一个 $f(x)$ 和 $g(x)$ 均为积性函数，那么我们知道以下的函数 $h(x)$ 也均为积性函数：
+\begin{align*}
+    h(x) = {} & f(x^p) \\
+    h(x) = {} & f^p(x) \\
+    h(x) = {} & f(x)g(x) \\
+    h(x) = {} & \sum_{d \mid x} f(d)g({x \over d}) = (f * g)(x)
+\end{align*}
+
+前面三个有脑子就知道，关键是最后一个的推导，其中我们令 $a$ 和 $b$ 互质，然后满足
+式子 $ab = x$：
+\begin{align*}
+    h(a)h(b) = {} & (f*g)(a) \cdot (f*g)(b) \\
+             = {} & \sum_{d_1 \mid a} f(d_1)g({a \over d_1}) \cdot \sum_{d_2
+                    \mid b} f(d_2)g({b \over d_2}) \\
+             = {} & \sum_{d_1 \mid a} \sum_{d_2 \mid b} f(d_1)g({a \over d_1})
+                    \cdot f(d_2)g({b \over d_2})\\
+             = {} & \sum_{\mathclap{d_1 \mid a, d_2 \mid b}} f(d_1 d_2) g({ab \over d_1
+                    d_2}) \\
+             = {} & \sum_{d \mid x} f(d) g({ab \over d})
+\end{align*}
+
+
+

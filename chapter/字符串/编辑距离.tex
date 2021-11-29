@@ -1,0 +1,24 @@
+\section{编辑距离}
+我们把字符串 $A$ 和 $B$ 的编辑距离 $s$ 定义为使 $A$ 成为 $B$ 最少的下列操作次数：
+\begin{enumerate}
+    \item 从 $A$ 中添加一个字符。
+    \item 从 $A$ 中删除一个字符。
+    \item 替换 $A$ 中的一个字符。
+\end{enumerate}
+
+其中删除一个 $A$ 中的字符，就等价于添加 $B$ 中的一个字符。它们是等价的。
+
+那么我们可以使用 DP 来做这个题。定义 $D[i, j]$ 为 $A_{0..i}$ 和 $B_{0..j}$（闭区
+间）的编辑距离。那么我们有：
+
+\begin{enumerate}
+    \item $D[0, j] = j$
+    \item $D[i, 0] = i$
+    \item $D[i, j] = \begin{cases}
+            \parbox{0.25\textwidth}{$1 + \min(D[i, j-1], D[i-1, j],
+                D[i-1,j-1])$}, & A_i \ne B_j \\
+                \\
+            \parbox{0.25\textwidth}{$1 + \min(D[i, j-1], D[i-1, j],
+                D[i-1,j-1] - 1)$}, & A_i = B_j \\
+        \end{cases}$
+\end{enumerate}

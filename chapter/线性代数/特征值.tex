@@ -1,0 +1,19 @@
+\section{特征值} \label{sec:特征值}
+见 \ref{sec:特征向量} 章中的定义。
+
+我们知道 $\MATID A \vec v = \lambda \vec v$，而正好 $\vec v$ 数乘上 $\lambda$，
+正好等于乘上：\[
+    \begin{bmatrix}
+        \lambda & 0 & 0 \\
+        0 & \lambda & 0 \\
+        0 & 0 & \lambda \\
+    \end{bmatrix}
+\]也就是说等于乘上 $\lambda \MATID I$，即有：\[
+    \MATID A \vec v - \lambda \MATID I \vec v = \vec 0
+\]提取公因式，有：\[
+    (\MATID A - \lambda \MATID I) \vec v = \vec 0
+\]
+
+根据 \ref{subsec:行列式的性质} 章中提到的性质，我们有：\[ |\MATID A - \lambda
+\MATID I| = 0 \]我们就可以根据行列式的公式（见 \ref{sec:行列式} 章）展开行列式之
+后解出方程即可。

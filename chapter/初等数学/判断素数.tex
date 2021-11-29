@@ -1,0 +1,68 @@
+\section{判断素数}\label{sec:判断素数}
+\subsection{朴素算法}
+在 $O(n)$ 的复杂度下能够判定一个数到底是素数还是合数。
+\begin{Cpp}
+int is_prime(int x){
+    if(x<2)return 0;
+    for(int i=2;i*i<=x;i++){
+        if(x%i==0)return 0;
+    }
+    return 1;
+}
+\end{Cpp}
+
+当然常数更小的是：
+\begin{Cpp}
+// 注意可能爆 int。
+bool is_prime(int x){
+    if(x==2||x==3) return true;
+    if(x<=1||x%2==0||x%3==0) return false;
+    for(int i=5;i*i<=x;i+=6){
+        if(x%i==0||x%(i+2)==0) return false;
+    }
+    return true;
+}
+\end{Cpp}
+
+\subsection{欧拉筛算法}
+根据章节 \ref{sec:欧拉筛} 中介绍的欧拉筛，我们可以求得 $\le \sqrt n$ 的所有素数
+，之后我们再根据这些素数来判断 $n$ 是不是一个素数。我们可以根据这个来压缩测试的
+时间复杂度。
+
+根据素数分布定理（见章节 \ref{sec:素数分布定理}），我们可以降低时间复杂度为原来
+的 $1 \over \ln \sqrt n$。
+
+\subsection{米勒罗宾}
+米勒罗宾是一个 $\FnO(n^{0.25})$ 的优秀算法。我自己写过，但是不仅慢，而且也消失在
+了历史长河中了。
+
+从小狮子那里借的板子（快速幂见章节 \ref{sec:快速幂}，因为有溢出的情况，记得换成
+模下乘）：
+\begin{Cpp}
+typedef long long ll;
+//typedef __int128 lll;
+
+inline ll fpow(ll x,ll p,ll MOD);
+
+inline bool mr(ll x,ll b){
+  ll k=x-1;
+  while(k){
+    ll cur=qp(b,k,x);
+    if(cur!=1 && cur!=x-1)
+      return false;
+    if((k&1)==1 || cur==x-1)
+      return true;
+    k>>=1;
+  }
+  return true;
+}
+
+inline bool prime(ll x){
+  // 468 - 562 - 482 - 559 - 81 and type - ll
+  if(x==46856248255981ll||x<2)
+    return false;
+  if(x==2||x==3||x==7||x==61||x==24251)
+    return true;
+  return mr(x,2)&&mr(x,61);
+}
+\end{Cpp}

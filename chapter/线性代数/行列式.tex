@@ -1,0 +1,42 @@
+\section{行列式} \label{sec:行列式}
+我们预先定义：
+\begin{itemize}
+    \item $S_n$ 为 $\{1, 2, \ldots, n\}$ 的置换的全体，如 
+        $$
+        \begin{aligned}
+            S_3 =  \{&(1\ 2\ 3), (1\ 3\ 2), (2\ 1\ 3), (2\ 3\ 1), (3\ 1\ 2), \\
+                     &(3\ 2\ 1)\}
+        \end{aligned}
+        $$
+    \item 对于置换 $\sigma$，我们令 $\FnSgn(\sigma)$ 为 $\sigma$ 的符号差，对于
+        数对 $(i, j)$，如果 $1 \le i < j \le n \land \sigma(i) > \sigma(j)$，那
+        么我们称其为一个逆序，记逆序对的数量为 $m$，有：
+        $$
+        \FnSgn(\sigma) = \begin{cases}
+            1,  & m \bmod 2 = 0,     \\
+            -1, & \text{otherwises}. \\
+        \end{cases}
+        $$
+        很明显，$\FnSgn((1\ 2\ 3)) = 1$，$\FnSgn((2\ 1\ 3)) = -1$。
+\end{itemize}
+
+那么行列式的定义如下：
+$$
+|\MATID A| = \FnDet(\MATID A) = \sum_{\sigma \in S_n}\FnSgn(\sigma) \prod_{i=1}^n a_{i, \sigma(i)}
+$$
+我们可以注意到 $S_n$ 中一共有 $n!$ 的求和项。
+
+比如说：
+\[
+    \begin{vmatrix}    
+        a & b \\
+        c & d \\
+    \end{vmatrix}
+    = 
+    a d - b c
+\]
+
+两向量如果共线，那么其构成的行列式也为零。
+
+\subsection{性质} \label{subsec:行列式的性质}
+当且仅当 $|\MATID A| = 0$ 的时候，$\MATID A \vec v = \vec 0$ 才存在一个平凡解。

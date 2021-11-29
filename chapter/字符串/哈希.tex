@@ -1,0 +1,107 @@
+\section{哈希} \label{sec:哈希}
+哈希可以将字符串映射到一个整数集合上。
+
+一般而言我们将字符串类比成多项式：如 $$f_{S = \text{\ttfamily "abc"}}(x) =
+\FnOrd(\mathtt{'a'})x^2 + \FnOrd(\mathtt{'b'})x + \FnOrd(\mathtt{'c'})$$
+
+那么如果令 $x > \#\Sigma$，且 $\FnOrd$ 能将 $\Sigma$ 中的所有值单射到 $R$，其中
+$R = \{1, 2, \ldots, \#\Sigma\}$， 那
+么我们可以说如果两个字符串不同，当且仅当它们的 $f$ 多
+项式不同，也等价于对于 $x > \#\Sigma$ 时，多项式的对应的值不同，即 $S \ne S' \iff
+f_S(x) \ne f_{S'}(x),\, \forall x > \#\Sigma$。
+
+因为一般而言 $\#\Sigma = 26$，我们可以取 $29$ 和 $31$。而因为整形类型不是封闭的
+，可能会有溢出，我们需要取一个足够大的素数模使得它是一个模下域。
+
+因此有代码：
+\begin{Cpp}
+namespace HS{
+  constexpr int LMT=/*字符串的长度*/,
+    MOD=(int)1e9+7,BAS=29;
+  ll POW[LMT],IPOW[LMT];
+  inline void init(){
+    POW[0]=1;
+    for(int j=1;j<LMT;j++){
+      POW[j]=POW[j-1]*BAS%MOD;
+    }
+    IPOW[LMT-1]=fpow(POW[LMT-1],MOD-2,MOD);
+    for(int j=LMT-2;j>=0;j--){
+      IPOW[j]=IPOW[j+1]*BAS%MOD;
+    }
+  }
+  inline int map(char ch){
+    return ch-'A'+1;
+  }
+  inline void push(int&A,char ch){
+    A=(A*POW[1]+map(ch))%MOD;
+  }
+  inline void push(int A[],char S[],int slen){
+    int tmp=0;
+    for(int i=0;i<slen;i++){
+      push(tmp,S[i]);A[i]=tmp;
+    }
+  }
+  inline int query(int A[],int b,int e){
+    return (A[e]-(b?A[b-1]:0)*POW[e-b+1]%MOD
+      +MOD)%MOD;
+  }
+}
+\end{Cpp}
+
+有时候，可以使用 $131$ 这个数字，用溢出来取模，可能也是可以的。小狮子说，字符集
+大小啥的不重要！硬冲就行。因为出题人猜不到我们选的基数是什么。
+
+有的时候会因为哈希冲突而过不了，这个时候我们需要使用大一点的东西，比如
+\verb|array|。
+
+\begin{Cpp}
+namespace HS{
+  constexpr int CNT=2,LMT=LEN;
+  constexpr int MOD[CNT]={
+    (int)1e9+7,(int)1e9+9};
+  constexpr int BAS[CNT]={29,31};
+  ll POW[CNT][LMT],IPOW[CNT][LMT];
+  inline void init(){
+    for(int i=0;i<CNT;i++){
+      POW[i][0]=1;
+      for(int j=1;j<LMT;j++){
+        POW[i][j]=POW[i][j-1]*BAS[i]%MOD[i];
+      }
+      IPOW[i][LMT-1]=fpow(POW[i][LMT-1],
+        MOD[i]-2,MOD[i]);
+      for(int j=LMT-2;j>=0;j--){
+        IPOW[i][j]=IPOW[i][j+1]*BAS[i]%MOD[i];
+      }
+    }
+  }
+  typedef array<int,CNT> RES;
+  inline int map(char ch){
+    return ch-'A'+1;
+  }
+  inline void push(RES&A,char ch){
+    for(int i=0;i<CNT;i++)
+      A[i]=(A[i]*POW[i][1]+map(ch))%MOD[i];
+  }
+  inline void push(RES A[],char S[],int slen){
+    RES tmp=RES();
+    for(int i=0;i<slen;i++){
+      push(tmp,S[i]);A[i]=tmp;
+    }
+  }
+  inline void print(RES&A){
+    printf("<");
+    for(int i=0;i<CNT;i++)printf("%d,",A[i]);
+    printf(">");
+  }
+  inline RES query(RES A[],int b,int e){
+    RES res=RES();
+    for(int i=0;i<CNT;i++)
+      res[i]=(A[e][i]
+        -(b?1ll*A[b-1][i]*POW[i][e-b+1]%MOD[i]:0)
+        +MOD[i])%MOD[i];
+    return res;
+  }
+}
+
+// 使用 HS::RES hs = HS::RES() 来初始化哦。
+\end{Cpp}

@@ -1,0 +1,19 @@
+\section{原根} \label{sec:原根}
+如果对于数 $m$ 而言，有另一个数 $a$ 满足 $\gcd(a,m)=1$ 并且 $\delta_m(a) =
+\varphi(m)$，那么我们就说 $a$ 是 $m$ 的原根。
+
+\subsection{原根判定}
+令 $m \ge 3$，对于满足 $\gcd(a, m) = 1$ 的 $a$ 而言，$a$ 是 $m$ 的原根，当
+且仅当对于 $\varphi(m)$ 的每一个素因数 $p$，均有 $a^{\varphi(m) \over p}
+\not\equiv 1 \pmod m$。
+
+\subsection{原根个数}
+若 $m$ 有原根，那么它原根的个数为 $\varphi(\varphi(m))$。
+
+\subsection{原根存在定理}
+一个数存在原根，当且仅当 $m = 2, 4, p^\alpha, 2p^\alpha$，其中 $p$ 是奇素数，
+$\alpha \in \mathbb{N}^*$。
+
+\subsection{暴力寻找原根}
+王元于 1959 年证明了 $m$ 原根的上界是 $m^{0.25}$。那么如果我们希望寻找 $m$ 的原
+根的时候，暴力求解即可。

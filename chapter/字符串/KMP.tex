@@ -1,0 +1,120 @@
+\section{KMP} \label{sec:KMP}
+扩展 KMP 见章节 \ref{sec:扩展KMP}。
+
+模板，其中，字符串 $S$ 应该从下标 $0$ 开始，而且 \cmd{nxt} 中的第 $i$ 个值表示了
+长度为 $i$ 的前缀子串（对应区间 $[0, i-1]$），它的前缀后缀最长匹配长度：
+\begin{Cpp}
+// need S(char[]), S_len(int)和 nxt(int []).
+void get_nxt() {
+  nxt[0] = -1;
+  for(int i = 1; i <= S_len; i ++) {
+    int cmi = nxt[i-1];
+    while(cmi!=-1 && S[cmi]!=S[i-1]) {
+      cmi = nxt[cmi];
+    }
+    nxt[i] = 1 + cmi;
+  }
+}
+\end{Cpp}
+
+或者更简单一点的：
+\begin{Cpp}
+// need S(char[]), S_len(int)和 nxt(int []).
+{
+  nxt[0]=-1; for(int i=1,cmi=-1; i<=S_len;i++){
+    while(cmi!=-1&&S[cmi]!=S[i-1])cmi=nxt[cmi];
+    nxt[i]=++cmi;
+  }
+}
+\end{Cpp}
+
+这里 $i$ 的 \verb|nxt| 值代表着第 $S[1\text{\texttt{..=} }i]$（这里 $S$ 从 $1$ 开始）的前缀后缀最
+长匹配长度。
+
+\subsection{KMP 的复杂度}
+KMP 的复杂度为 $\FnO(n)$，这有一个直观的解释。
+
+首先 \cmd{cmi} 在匹配的时候会加一。那么它最多加 $n$ 次（$n$ 为模式串的长度）。而
+在失配的时候则会减去自己。而减的次数就是 \cmd{while} 循环的次数。
+
+那么里面的 \cmd{while} 语句只循环 $n$ 次，剩下的那个赋值语句也循环 $n$ 次。那么
+总共而言的时间复杂度就是 $\FnO(n)$ 次。
+
+\subsection{KMP 求循环节}
+如果有循环节。那么最小循环节的长度为：
+\begin{Cpp}
+S_len - nxt[S_len]
+\end{Cpp}
+
+值的注意的是，这个循环节只是最小循环节，而其他循环节大多数是最小循环节的倍数，而
+也可能不是，比如：
+\begin{Cpp}
+aabcaa
+====-
+abcababcab
+=====---
+aabaabaa
+======-
+\end{Cpp}
+
+\subsection{KMP 匹配主串}
+如果 $P$ 为模式串，而 $S$ 为主串，那么。
+
+\begin{Cpp}
+{
+  char P[/* LEN */];
+  int P_len=/* length of P */,nxt[/* LEN */];
+
+  // KMP code to build nxt for string P.
+
+  char S[/* LEN */];
+  int S_len=/* length of S */;
+
+  int res=0;
+  for(int i=0,pi=0;i<S_len;i++,pi++){
+    while(pi!=-1&&S[i]!=P[pi]){
+      pi=nxt[pi];
+    }
+    if(pi==P_len-1) res++;
+  }
+}
+\end{Cpp}
+
+注意，这里求出来的匹配次数对应的子串可能有重复。如果不想要重复
+，那么应该在匹配到了之后重新加载 \cmd{pi}。如下：
+\begin{Cpp}
+{
+  for(int i=0,pi=0;i<S_len;i++,pi++){
+    // etc...
+    if(pi==P_len-1) pi=-1,res++;
+  }
+}
+\end{Cpp}
+
+\subsection{KMP 和 border}
+倍增见章节 \ref{sec:倍增}。
+
+因为 KMP 求的是最长的前后缀匹配长度，也可以说是 border。那么次长的一定是 nxt 的
+nxt。所有的 border，均可以使用。可以用 KMP 来维护一个所有的 border，也可以使用扩
+展 KMP（见章节 \ref{sec:扩展KMP}）。
+
+下面代码可以求 border 的数量：
+\begin{Cpp}
+nxt[0]=-1,num[0]=-1;
+for(int i=1,cmi=-1;i<=S_len;i++){
+  while(cmi!=-1&&S[i-1]!=S[cmi])cmi=nxt[cmi];
+  nxt[i]=++cmi;
+  num[i]=num[nxt[i]]+1;
+}
+\end{Cpp}
+
+我们可以根据这来求不相交的匹配前后缀。
+\begin{Cpp}
+{
+   while(aocmi!=-1&&
+       (S[i-1]!=S[aocmi]||(aocmi+1)*2>i))
+     aocmi=nxt[aocmi];
+   cnt[i]=num[++aocmi]+1;
+}
+\end{Cpp}
+

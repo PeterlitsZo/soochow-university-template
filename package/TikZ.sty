@@ -1,0 +1,17 @@
+\RequirePackage{tikz}
+\RequirePackage{pgffor,pgfmath}
+\usetikzlibrary{calc}
+\usetikzlibrary{quotes}
+
+% \draw pic["$\alpha$", draw, angle radius=4mm]{angle=A--E--B};
+\usetikzlibrary{angles}
+
+% 使用 \filldraw (<coordinate>) \TdotI[<radius>] or \Tdot 来画点。
+\def\Tdot{circle (0.7mm)}
+\def\TdotI[#1]{circle (#1)}
+
+% 使用 \Tinter{<path>}{<path>} 来得到一个新的 <coordinate>。
+\newcommand\Tinter[2]{(intersection of #1 and #2)}
+
+% 定义样式
+\tikzset{TNode/.style={circle, inner sep=0.1cm, draw=blue!20!black, fill=yellow!20}}

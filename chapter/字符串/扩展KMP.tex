@@ -1,0 +1,23 @@
+\section{扩展 KMP \& K 函数} \label{sec:扩展KMP}
+KMP 见章节 \ref{sec:KMP}。
+
+扩展 KMP 也可以用后缀数组来做，后缀数组见章节 \ref{sec:后缀自动机和后缀数组}。
+
+我们经过扩展 KMP 之后会得到一个 $z$ 数组。其中 $z_i$ 表示下标从 $0$ 开始的字符串
+$S$ 和 $S_{i:}$ 的最长匹配前缀。一个显而易见的推论是，如果 $z_i = n - i$，那么这
+个字符串存在一个匹配的前后缀。
+
+比如：$\text{\cmd{"aaaaa"}} \Rightarrow z = [0, 4, 3, 2, 1]$。
+
+有模板如下：
+\begin{Cpp}
+{
+  char S[LEN];
+  int S_len;
+
+  static int z[LEN];
+  for(int i=1;i<=n;++i){
+    while(i+z[i]<n&&S[z[i]]==S[i+z[i]])++z[i];
+  }
+}
+\end{Cpp}

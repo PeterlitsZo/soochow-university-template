@@ -1,0 +1,29 @@
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{Cal Poly Pomona green}{rgb}{0.12,0.3,0.17}
+
+\normalsize
+\newlength{\normalsizeHeight}
+\setlength{\normalsizeHeight}{\f@size pt}
+
+\lstnewenvironment{Cpp}
+    {\lstset{
+        language=C++, 
+        xleftmargin=2\normalsizeHeight,
+        aboveskip=2.5mm,
+        belowskip=2.5mm,
+        showstringspaces=false,
+        columns=flexible, % or fixed
+        basicstyle={\fontsize{7.6}{7.5}\selectfont\ttfamily},
+        numbers=none,
+        keywordstyle=\color{blue},
+        commentstyle=\color{dkgreen},
+        stringstyle=\color{mauve},
+        breaklines=true,
+        breakatwhitespace=true
+        }
+    }{}

@@ -1,0 +1,42 @@
+\section{圆}
+\subsection{外接圆圆心}
+易证明外接圆的圆心位于三个边的中垂线的交点上。
+
+（TODO：tikz 的示意图。）
+
+我们使用如 \ref{subsec:中垂线} 章和 \ref{subsec:两点交点} 章中的知识求解即可。
+
+\begin{Cpp}
+Vec circle(Vec a,Vec b,Vec c){
+  Vec p=(a+b)*.5,q=(b+c)*.5,
+      vp=(b-a).rotate_90(),
+      vq=(c-b).rotate_90();
+  double l=(q-p).times(vq)/vp.times(vq);
+  return p+(vp*l);
+}
+\end{Cpp}
+
+\subsection{最小圆覆盖（随机增量法）}
+给定 $n$ 个点，能得到最小覆盖住所有点的圆。其时间复杂度为 $\FnO(n)$。
+
+\begin{Cpp}
+srand(time(0));
+random_shuffle(PTS, PTS+t);
+Vec O; double r2=0.0;
+for(int i=0;i<t;i++){
+  if((O-PTS[i]).len2()<=r2)continue;
+  O=PTS[i],r2=0.0;
+  for(int j=0;j<i;j++){
+    if((O-PTS[j]).len2()<=r2)continue;
+    O=(PTS[i]+PTS[j])*.5;
+    r2=(O-PTS[j]).len2();
+    for(int k=0;k<j;k++){
+      if((O-PTS[k]).len2()<=r2)continue;
+      O=circle(PTS[i],PTS[j],PTS[k]);
+      r2=(O-PTS[k]).len2();
+    }
+  }
+}
+\end{Cpp}
+
+

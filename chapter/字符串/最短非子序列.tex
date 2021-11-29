@@ -1,0 +1,55 @@
+\section{最短非子序列} \label{sec:最短非子序列}
+给定一个字符集 $\Sigma$ 和一个串 $S$，我们需要求它的最短非子序列。
+
+这并不难，我们贪心地解即可：子序列的每一个字符，都在前一个匹配的基础上，尽可能地
+向后匹配。
+
+比如若 $\Sigma = \{a, b\}$，那么字符串 $S = \text{\cmd{"abaabb"}}$ 对应的最短
+非子序列为 \cmd{"bba"}，其中第一个字符应当是 $b$，因为它匹配的是第二位，比 $a$匹
+配得远。
+
+对于一个而言，我们很容易就可以解出来了，但是对于一个串的子串而言，我们需要预处理
+来降低复杂度。答案就是倍增（倍增见 \ref{sec:倍增} 章节）来跳跳跳。
+
+参考代码：
+\begin{Cpp}
+static char S[LEN];
+static int MP[30],JP[LEN][20];
+
+// 使用 MP 来得到基本的数据（JP[x][0]）。
+fill(MP,MP+30,n+1);
+JP[n+1][0]=n+1;
+for(int i=n;i>=0;i--){
+  JP[i][0]=*max_element(MP,MP+m);
+  MP[S[i]-'a']=i;
+}
+
+// 得到 JP[x][y]。
+for(int i=1;i<20;i++){
+  JP[n+1][i]=n+1;
+  for(int j=0;j<=n;j++){
+    JP[j][i]=JP[JP[j][i-1]][i-1];
+  }
+}
+
+// 查询
+int q;scanf("%d",&q);
+for(int i=0;i<q;i++){
+  int l,r;scanf("%d%d",&l,&r);
+  int bef=l-1,ans=0;
+  // 退出循环的标志位。
+  bool flg=0;
+  while(true){
+    for(int i=0;i<20;i++){
+      if(JP[bef][i]>r) {
+        // 当 i==0 且 JP[bef][i]>r，就该退出了。
+        if(i) ans+=1<<(i-1),bef=JP[bef][i-1];
+        else flg=1,ans+=1; 
+        break;
+      }
+    }
+    if(flg)break;
+  }
+  printf("%d\n",ans);
+}
+\end{Cpp}

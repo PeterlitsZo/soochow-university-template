@@ -1,0 +1,73 @@
+\section{点}
+\subsection{两点和距离求第三点}
+利用随机算法可以快速求出所有的点。
+
+首先我们可以查询任意一个点到某一个未知点 $(x', y')$ 的距离，假设这个未知点在第一
+象限，那么我们可以查询 $(x, 0)$ 和 $(x + 1, 0)$，为简化运算，不妨设查询到的结果
+其为对应距离的平方 $a$ 和 $b$，那么自然而然 $|a - b| = 2d + 1$，其中 $d =
+\min(|x' - x|, |x' - x + 1|)$，即横坐标下 $x'$ 和最近的查询点之间的距离。然后我
+们可以根据 $a$ 和 $b$ 的大小关系来求解它到底是距离 $(x, 0)$ 更近一点还是 $(x +
+1, 0)$。
+
+之后我们求出横坐标，纵坐标自然也轻轻松松。
+\begin{Cpp}
+while(true){
+    // 随机两个查询点并查询
+    x=rand()%XRANGE;
+    printf("%d %d\n%d %d\n",x,0,x+1,0);
+    fflush(stdout);
+
+    // 记录查询结果
+    ll a,b;
+    scanf("%lld%lld",&a,&b);
+
+    // P 氏猜想：当且仅当 a == b，它们查询的是两
+    // 个不同的点。
+    if(a==b) continue;
+
+    // 计算答案
+    ll ax=(a<b?-1:1)*(abs(a-b)-1)/2+(a<b?x:x+1);
+    ll ay=sqrt(a-1ll*(ax-x)*(ax-x));
+
+    // P 氏猜想不对也没有关系，验证答案，不对再
+    // 随机即可。
+    printf("%lld %lld\n",ax,ay);
+    fflush(stdout);
+    scanf("%lld",&a);
+    if(a==0)break;
+}
+\end{Cpp}
+
+\subsection{点到直线的距离}
+首先我们不妨假设在二维平面上，那么如图 \ref{fig:点到直线的距离} 所示。
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \filldraw (0, 0) \Tdot coordinate (P) node[above=1mm]{$P$};
+        \filldraw (-2, -2) \Tdot coordinate (A) node[left=1mm]{$A$};
+        \filldraw (2, -1) \Tdot coordinate (B) node[right=1mm]{$B$};
+        \draw (A) -- (B);
+        \draw[dashed] (A) -- (P);
+        \draw pic["$\alpha$", draw, angle radius=8mm]{angle=B--A--P};
+        \filldraw ($(A)!(P)!(B)$) \Tdot coordinate (P') node[below=1mm]{$P'$};
+        \draw (P) -- (P');
+    \end{tikzpicture}
+    \caption{点到直线的距离}
+    \label{fig:点到直线的距离}
+\end{figure}
+
+首先根据点积（见章节 \ref{subsec:向量数量积}），我们可以很容易得到 $\cos(
+\alpha)$，然后也能得到 $\sin(\alpha)$，根据 $\sin(\alpha)$，我们能得到 $PP'$ 的
+距离。
+
+那么代码如下：
+\begin{Cpp}
+// dot 是点，a、b 是直线过的两点
+double dot_to_line_distance(Vec dot,Vec a,Vec b){
+  Vec ab=b-a,adot=dot-a;
+  double cosa=adot*ab/ab.len()/adot.len();
+  double sina=sqrt(1-cosa*cosa);
+  return sina*adot.len();
+}
+\end{Cpp}

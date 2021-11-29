@@ -1,0 +1,48 @@
+\section{字符串处理}
+
+
+
+\subsection{输入一行}
+在清除掉之前所有的回车之后，我们可以使用 \verb|getline| 来得到一行。它有两种表示
+方法，分别是 C++ 式的：
+\begin{Cpp}
+string S;
+getline(cin,S);
+\end{Cpp}
+
+和 C 式的：
+\begin{Cpp}
+char *S; size_t n;
+geline(&S,&len,stdin);
+\end{Cpp}
+
+其中 \cmd{n} 不是字符串的长度，而是它分配的字节数。并且会包含行末回车。
+
+
+
+\subsection{字符串比较}
+在 C 语言中，我们可以使用 \cmd{strcmp} 来进行字符串的比较。如果返回值为 \cmd{0}
+，那么说明这两个字符串相等。
+
+在 C++ 中则比较简单：使用重载过的的 \cmd{==} 操作符即可。但是不能用来比较两个
+\cmd{char *} 变量就是了。
+
+
+
+\subsection{拆分字符串}
+在 C 语言中，我们可以使用 \cmd{sscanf} 来从一个字符串中进行格式化输入。
+\begin{Cpp}
+sscanf(const char *str,const char *format,...);
+\end{Cpp}
+
+如果拆不动，会啥都不干，所以记得在拆之前让第一个字符为 \cmd{0}。
+
+
+
+\subsection{解析}
+使用 \cmd{strtol} 来进行从字符串到数字的转换：
+\begin{Cpp}
+strtol(const char *str,char **end,int base);
+\end{Cpp}
+
+

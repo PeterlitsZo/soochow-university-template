@@ -1,0 +1,87 @@
+\section{函数}
+
+
+
+\subsection{buildin 系列}
+\cmd{\_\_builtin\_popcount} 可以用来计算一个数在二进制情况下有多少个 $1$。
+
+
+
+\subsection{\protect\cmd{memset}} \label{sec:memset的使用} \label{subsec:memset}
+我们对数组 \cmd{A} 使用：
+\begin{Cpp}
+memset(A, 0, sizeof A);
+\end{Cpp}
+
+来使它全部初始化为 $0$。我们也可以使用下列代码来令所有的位都为 $1$，不过值的注意
+的是，在带符号数中，它是 -1 而并非最大正整数。
+\begin{Cpp}
+memset(A, 255, sizeof A);
+\end{Cpp}
+
+我们可以使用下列代码来取得尽可能大的正整数，但是值的注意的是，它并不是最大的整数
+，并且相加的时候可能会有溢出。
+\begin{Cpp}
+memset(A, 127, sizeof A);
+\end{Cpp}
+
+为了避免溢出，我们可以再次右移一位，使用 \cmd{63}：
+\begin{Cpp}
+memset(A, 63, sizeof A);
+\end{Cpp}
+
+著名的 \cmd{0x3f3f3f3f} 的内存结构是：
+\begin{Cpp}
+| 00111111 | 00111111 | 00111111 | 00111111 |
+\end{Cpp}
+
+这和使用 \cmd{63} 来 \cmd{memset} 的结果相同。
+
+而 \cmd{-63} 的内存结构是：
+\begin{Cpp}
+| 11000000 | 11000000 | 11000000 | 11000001 |
+\end{Cpp}
+
+所以我们可以使用下列 \cmd{memset} 来得到足够小的负数（不过明明 \cmd{-64} 按理来
+说也可以，应该是为了记忆方便吧）：
+\begin{Cpp}
+memset(A, -63, sizeof A);
+\end{Cpp}
+
+
+
+\subsection{随机排列}
+使用 \verb|shuffle(begin, end, randomer)| 可以用来随机排列，不过这个函数需要我们
+传入一个随机器。为了避免传入带来的心智负担，我们可以使用带有随机器的随机排列函数
+：\verb|random_shuffle|。它不需要第三个参数。
+
+
+
+\subsection{查找}
+\subsubsection{二分查找}
+在已经排序中的数组中，可以在 $\FnO(n\lg n)$ 的时间复杂度内使用二分查找查找到制定
+值。一般而言，我们有两个函数用于二分查找：第一个是能返回第一个大于等于查找值的值
+的对应迭代器，即 \verb|lower_bound|；第二个能返回第一个大于查找值的值的对应迭代
+器，即\verb|upper_bound|。它们两个迭代器的差，即为查找值的个数。
+
+
+
+\subsection{下一个排列组合}
+我们可以使用 \cmd{next\_permutation} 来得到下一个排列组合数。
+
+在使用之前需要先排个序。
+
+
+
+\subsection{输入输出}
+在 C 中我们使用 \cmd{scanf} 和 \cmd{printf} 来进行输入输出。
+
+\subsubsection{函数 \protect\cmd{scanf}}
+它接受的格式为 \cmd{\%[*][width][length]type}。
+
+其中 \cmd{*} 符号可以用来读入然后再跳过赋值。\cmd{width} 本身是一个数字，表示从
+输入中最多拿几个用来解析。\cmd{length} 可以是 \cmd{l} 或者 \cmd{L}，用来扩展
+\cmd{type} 的。
+
+如果包含空格，那么 \cmd{scanf} 会读入尽可能多的空格然后抛弃掉。
+

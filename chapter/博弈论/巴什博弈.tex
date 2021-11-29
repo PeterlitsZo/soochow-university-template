@@ -1,0 +1,13 @@
+\section{巴什博弈} \label{sec:巴什博弈}
+巴什博弈是博弈范式中最简单的。它的定义为：一共有 $n$ 个数，然后每个人每次最多能
+取 $1 \sim m$ 个物品。先取完者获胜。求取最后他到底必赢还是必输。
+
+代码应该如下：
+\begin{Cpp}
+// 0: lost, others: win
+int BH(int k){
+    return k % (m + 1);
+}
+\end{Cpp}
+
+

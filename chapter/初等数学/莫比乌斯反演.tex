@@ -1,0 +1,81 @@
+\section{莫比乌斯反演}
+需要前置知识积性函数（见章节 \ref{sec:积性函数}）和狄利克雷卷积（见章节
+\ref{sec:狄利克雷卷积}）。
+
+首先我们需要证明莫比乌斯函数 $\mu(n)$ 满足式子：\[
+    \sum_{d \mid n} \mu(d) = [n = 1]
+\]
+
+我们知道莫比乌斯函数为：\[
+    \mu(n) = \begin{cases}
+        1,      & n = 1, \\
+        0,      & n \text{ 含有平方因子}, \\
+        (-1)^k, & k \text{ 为 } n \text{ 的本质不同的质因子个数}.
+    \end{cases}
+\]
+
+假设我们已经证明完了，那么根据狄利克雷卷积，我们可以把它转换为：\[
+    \mu * 1 = \epsilon
+\]
+
+而对应的，公式：\[
+    F(n) = \sum_{d \mid n} f(d)
+\]
+
+能转换为：\begin{align*}
+    f * 1        = {} & F \\
+    f * 1 * \mu  = {} & F * \mu \\
+    f * \epsilon = {} & F * \mu \\
+    f            = {} & F * \mu
+\end{align*}
+
+综上，有：\[
+    f(n) = \sum_{d \mid n} \mu(d) F({n \over d})
+\]
+
+也就是说，在函数集合和狄利克雷卷积形成的代数结构是一个群：它满足封闭性、结合律、
+单位元（元函数 $\epsilon$），和逆元（恒等函数 $1$ 的逆元就是莫比乌斯函数 $\mu$）
+。
+
+举例来说，我们令 $f(p)$ 用来表示在 $1 \sim N$ 的范围内，$\gcd(x, y) = p$ 的对数
+，那么 $F(p) = (1 * f)(p)$ 则可以用来表示 $p \mid \gcd(x, y)$ 的个数。很明显第二
+个更容易解得。那么乘上逆元，我们有：\begin{align*}
+    f(p) = {} & (\mu * F)(p) \\
+         = {} & \sum_{p \mid d} \mu({d \over p}) F(d) \\
+         = {} & \sum_{d = 1}^{p} \mu(d){N \over dp}\cdot{N \over dp}
+\end{align*}
+
+\subsection{$\varphi * \mathbf{1} = \mathrm{id}$}
+$\varphi * \mathbf{1} = \mathrm{id}$ 作为莫比乌斯反演中一个重要的结论，我们根据
+函数 $\varphi$ 是一个积性函数，那么我们只需要证明出 $(\varphi * \mathbf{1})(n' =
+p^c) = n'$ 即可：\begin{align*}
+    (\varphi * \mathbf{1})(n') = {} & \sum_{d \mid n'} \varphi(d) \\
+                               = {} & \sum_{i = 0}^{c} \varphi(p^i) \\
+                               = {} & 1 + \sum_{i = 1}^{c} p^{i - 1} \cdot (p - 1) \\
+                               = {} & p^c = n'
+\end{align*}
+
+如果两边都卷上一个 $\mu$，那么我们就有了 $\varphi = \mathrm{id} * \mu$。
+
+\subsection{案例一：$\gcd$ 的和}
+\paragraph{题目} 求 \[
+    \sum_{i=1}^{n} \sum_{j=i+1}^{n} \gcd(i, j)
+\]
+
+\paragraph{推导} 首先我们令 $d = \gcd(i, j)$，枚举之：\begin{align*}
+     & \sum_{d=1}^{n} d \sum_{i=1}^{n} \sum_{j=i+1}^{n} [\gcd(i, j) = d]\\
+    =& \sum_{d=1}^{n} d \sum_{i=1}^{\lfloor{n \over d}\rfloor}
+    \sum_{j=i+1}^{\lfloor{n \over d}\rfloor} [\gcd(i, j) = 1] \\
+    =& \sum_{d=1}^{n} d \sum_{i=1}^{\lfloor{n \over d}\rfloor}
+    \sum_{j=i+1}^{\lfloor{n \over d}\rfloor} \sum_{e \mid \gcd(i, j)} \mu(e)
+\end{align*}
+
+现在我们又开始枚举 $e$ 了啦！\begin{align*}
+    & \sum_{d=1}^{n} d \sum_{e=1}^{n} \mu(e) \left\lfloor{n \over de}\right\rfloor^2
+\end{align*}
+
+我们敏锐地注意到，如果 $D = de$，那么 $D > n$ 时就没有意义。我们根据这个来减少枚
+举范围，有：\begin{align*}
+    & \sum_{D=1}^{n} \sum_{d \mid D} d \mu({D \over d}) \left\lfloor{n \over D}\right\rfloor^2 \\
+    = & \sum_{D=1}^{n} \left\lfloor{n \over D}\right\rfloor^2 \varphi(D) 
+\end{align*}

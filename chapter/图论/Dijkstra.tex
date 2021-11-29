@@ -1,0 +1,35 @@
+\section{Dijkstra} \label{sec:dijkstra}
+Dijkstra 一般用来求解最短路问题。其中边不能为负边的情况下，我们能在 $\FnO(n
+\log m)$ 的时间复杂度内进行求解。
+
+另一个求最短路的算法，见 \ref{sec:Bellman-Ford算法} 中的 Bellman-Ford 算法。
+
+\begin{Cpp}
+struct edge{int v,w;};
+struct node{
+  int dis,v;
+  bool operator>(const node& other)const
+    {return dis>other.dis;}
+};
+
+template<typename T>
+using pri_queue_big=priority_queue<
+  T,vector<T>,greater<T>>;
+pri_queue_big<node> Q;
+
+dis[s]=0;
+Q.push({0,s});
+while(!Q.empty()){
+  int v=Q.top().v; Q.pop();
+  if(vis[v])continue;
+  vis[v]=1;
+  for(auto e:MP[v]){
+    if(dis[v]+e.w < dis[e.v]) {
+      dis[e.v]=dis[v]+e.w;
+      Q.push({dis[e.v], e.v});
+    }
+  }
+}
+\end{Cpp}
+
+

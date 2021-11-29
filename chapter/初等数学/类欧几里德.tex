@@ -1,0 +1,71 @@
+\section{类欧几里德} \label{sec:类欧几里德}
+类欧几里德主要是解决方式和欧几里德的方法高度相似。它求解的问题和数论分块所需要解
+决的问题近似，但是方法却大不相同。
+
+见 \ref{sec:数论分块} 章节中，数论分块解决形如下式的问题：
+$$
+\sum^{n}_{i=1} \lfloor{n \over i}\rfloor
+$$
+
+而类欧几里德需要解决的问题形如：
+$$
+\sum^{n}_{i=0} \lfloor{ai + b \over c}\rfloor
+$$
+
+我们注意到，当 $a \ge c$ 或者 $b \ge c$ 的时候，我们可能可以将它们拆开成对于 $c$
+的倍数和余数，从而简化运算过程，有：
+$$
+\small
+\begin{aligned}
+    {} & f(a, b, c, n) \\
+    = {} & \sum^{n}_{i=0} \lfloor{ai + b \over c}\rfloor \\
+    = {} & \sum^{n}_{i=0} \left\lfloor{(\lfloor{a \over c}\rfloor c + a \bmod c)i +
+        (\lfloor{b \over c}\rfloor c + b \bmod c) \over c}\right\rfloor \\
+    = {} &{n^2 (n + 1) \over 2} \lfloor{a \over c}\rfloor + (n + 1) \lfloor{b \over c}\rfloor \\ 
+    {} & + \sum^{n}_{i=0} \lfloor{(a \bmod c) i + (b \bmod c) \over c}\rfloor
+\end{aligned}
+$$
+
+所以有：$f(a, b, c, n) = {n^2 (n + 1) \over 2} \lfloor{a \over c}\rfloor + n
+\lfloor{b \over c}\rfloor  + f(a \bmod c, b \bmod c, c, n)$。
+
+其他情况下，我们考虑贡献合并，就像莫比乌斯反演一样：
+$$
+\small
+\begin{aligned}
+    {} & f(a, b, c, n) \\
+    = {} & \sum^{n}_{i=0} \lfloor{ai + b \over c}\rfloor \\
+    = {} & \sum^{\lfloor{an + b \over c}\rfloor - 1}_{j=0} \sum_{i=0}^{n} \left[j <
+        \left\lfloor{ai + b \over c}\right\rfloor\right] \\
+    = {} & \sum^{\lfloor{an + b \over c}\rfloor - 1}_{j=0} \sum_{i=0}^{n} \left[
+        j + 1 \le {ai + b \over c}\right] \\
+    = {} & \sum^{\lfloor{an + b \over c}\rfloor - 1}_{j=0} \sum_{i=0}^{n}
+        \left[i \ge {jc + c - b \over a}\right] \\
+    = {} & \sum^{\lfloor{an + b \over c}\rfloor - 1}_{j=0} \sum_{i=0}^{n}
+        \left[i > \left\lfloor{jc + c - b - 1 \over a}\right\rfloor\right] \\
+    = {} & \sum^{\lfloor{an + b \over c}\rfloor - 1}_{j=0} \left(n - \left\lfloor{jc
+        + c - b - 1 \over a}\right\rfloor\right) \\
+    = {} & \lfloor{an + b \over c}\rfloor n - \sum^{\lfloor{an+b\over
+        c}\rfloor-1}_{j=0} \lfloor{jc + c -  b - 1 \over a}\rfloor
+\end{aligned}
+$$
+
+我们注意到 $f(c, c - b - 1, a, \left\lfloor{an + b \over c}\right\rfloor - 1)$
+即为后式。
+
+我们注意到 $a$ 和 $c$ 换了位置。这说明了我们可以再取模，再递归，从而是一个类辗转
+相除的过程。
+
+相关代码如下：
+\begin{Cpp}
+// => sum^n_{i=0} floor((ai + b) / c)
+int f(int n,int a,int b,int c){
+  if(a>=c||b>=c)
+    return a/c*n*(n+1)/2+b/c*(n+1)
+            + f(n,a%c,b%c,c);
+  if((a*n+b)/c)
+    return (a*n+b)/c*n-f((a*n+b)/c-1,c,c-b-1,a);
+  return 0;
+}
+\end{Cpp}
+

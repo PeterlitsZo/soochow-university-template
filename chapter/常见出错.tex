@@ -1,0 +1,52 @@
+\chapter{常见出错}
+\section{一般出错}
+\subsection{WA - 答案错误}
+\begin{itemize}
+    \item 是否超出范围了？将 \verb|int| 改成 \verb|ll| 或者 \verb|__int128|，将
+        \verb|double| 改成 \verb|ld| 试试？甚至可以分开记录分子分母？还要记得检
+        查检查函数的传参的类型哦。
+    \item 数组的大小是否不太够啊？数组有没有正确地初始化？
+    \item 是否忘记初始化了？对于会重复调用的部分，那个 \verb|static| 不可声明即
+        初始化哦。
+    \item 是不是右移的时候，字面量的类型范围不够大啊？比如 \verb|1ll << k| 而不
+        是 \verb|1 << k|。
+    \item 是否使用了已经 \verb|erase| 的迭代器？
+    \item 输入输出是不是对的？尤其是多测试的样例。
+\end{itemize}
+
+\subsection{TLE - 运行超时}
+\begin{itemize}
+    \item 使用 \verb|bitset| 或者 \verb|bool[]| 来代替 \verb|int[]|。一般而言
+        \verb|bitset| 的常数时间复杂度约为 \verb|bool[]| 的一半。
+    \item \verb|map| 的键是 \verb|tuple|、\verb|pair| 之类的话，可以用类字符串哈
+        希卡常过去。
+    \item 做模拟题的是否可能会卡住，是否可以不用 loop 来模拟，而是在一开始计算出
+        所有值，之后再来判断？
+    \item 是否没有删掉 \verb|fflush(stdout)| 等开销大的，又没啥用的函数？
+    \item 如果数据结构的开销太大了，必须搞一个数组卡过去。
+    \item 如果搜索的时候卡住了，检查一下有没有带记忆化？或者尝试自底向上。
+    \item \verb|for| 循环的时候，如果本意是递减循环的话，看看是不是实际实现时却
+        写成了递增？
+    \item 超出范围，有时候也会运行超时。
+    \item 是不是数组开太大了？加上 \verb|static| 或者把它放到外面去。
+    \item 是不是数组开小了？正如上所示，超出范围会运行超时，但是有时候是本身数组
+        就开小了。
+\end{itemize}
+
+\subsection{RE - 运行时错误}
+\begin{itemize}
+    \item 是否使用了已经 erase 的迭代器？
+    \item 是否 \cmd{--} 了 \cmd{begin} 迭代器或者 \cmd{++} 了 \cmd{end} 迭代器？
+\end{itemize}
+
+\section{计算几何}
+\begin{itemize}
+    \item 对于斜率来说，$a \over b$ 和 $-a \over -b$ 都是一个东西。如果使用
+        \verb|pair| 来保存的话，记得令某一个一定为非负数。
+    \item 使用 \cmd{acos} 和 \cmd{asin} 的时候，记得限定范围。而我们还可以使用
+        \cmd{atan2(\nam{x}, \nam{y})} 来代替 \cmd{atan(\nam{x/y})}。
+
+        对于 \cmd{acos} 和 \cmd{asin} 而言，我们可以使用 \cmd{min} 和 \cmd{max}
+        函数来将它们限定在 $[-1, 1]$ 的范围内，以避免得到 \cmd{NaN}：
+        \cmd{min(max(\nam{x},-1.),1.)}。
+\end{itemize}

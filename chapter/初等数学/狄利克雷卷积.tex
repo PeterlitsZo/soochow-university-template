@@ -1,0 +1,12 @@
+
+\section[狄利克雷卷积]{狄利克雷卷积\footnote{参考了很多 bilibili 上的
+        BV1H4411D7qo 视频和 OI-wiki。}}\label{sec:狄利克雷卷积}
+对于两个算术函数 $f$ 和 $g$，它们的狄利克雷卷积是
+$$
+    (f * g)(n) = \sum_{d\mid n}f(d)g({n\over d})
+$$
+
+因为约数的个数上限在 $2\sqrt n$，所以单纯用定义去算的话，需要使用 $\FnO(\sqrt n)$
+的复杂度的。
+
+

@@ -1,0 +1,29 @@
+\section{欧拉筛} \label{sec:欧拉筛}
+欧拉筛可以在 $O(n)$ 的时间复杂度内判定 $1 \sim n$ 的素数情况，故又叫做线性筛。这
+是一个更加紧凑的版本，它的长度存储在 \cmd{PS[0]} 中，因为是数组，所以会快一些：
+\begin{Cpp}
+const int P_RAG=/* PS 这个素数表的最大范围 */;
+int PS[P_RAG/* 因为素数分布定理，P_RAG 等于 10^P 的时候，右移 log_2 P 位即可*/];
+bitset<P_RAG> notP;
+// 求最小质因子的表。
+init SMFA[P_RAG];
+
+void PSinit() {
+  notP[0]=notP[1]=true;
+  for(int i=2;i<P_RAG;i++){
+    if(!notP[i]){
+      PS[++PS[0]]=i;
+      SMFA[i]=i;/* 可选 */
+    }
+    for(int pi=1;PS[pi]*i<P_RAG;pi++){
+      notP[PS[pi]*i]=true;
+      SMFA[PS[pi]*i]=PS[pi];/* 可选 */
+      if(i%PS[pi]==0)break;
+    }
+  }
+}
+\end{Cpp}
+
+想要使用线性筛求欧拉函数？见章节 \ref{sec:线性筛求欧拉函数}。
+
+

@@ -1,0 +1,43 @@
+\section{快速幂}
+\label{sec:快速幂}
+
+矩阵快速幂见章节 \ref{sec:矩阵快速幂}。
+
+快速幂是一个很基本的代码啦。其代码如下，如果数字太大了的话，那么需要将所有的
+\cmd{int} 转换为一个 \cmd{ll}，如果大得过于离谱的话，那么我们还需要使用模下的乘
+法，见 \ref{sec:模下乘}，来避免溢出：
+\begin{Cpp}
+ll fpow(ll b,ll p,/*ll MOD(注意大小写)*/){
+  ll res=1;
+  while(p){
+    // 可能需要用到模下乘的地方
+    if(p&1)res=(ll)res*b%MOD;
+    p>>=1;
+    // 可能需要用到模下乘的地方
+    b=b*b%MOD;
+  }
+  return res;
+}
+\end{Cpp}
+
+如果 $b$ 固定而幂 $p$ 不固定的话，我们可以先使用一个 $O(\sqrt{\max(p)})$ 的时间复杂
+度来预处理，之后用 $O(1)$ 的时间复杂度来求解快速幂，即使用 BSGS（见章节
+\ref{sec:BSGS}）：
+\begin{Cpp}
+{
+  int x=/* 底数的大小 */;
+  const int MOD=/* 模 */,LEN=/* 保证大于 stp */;
+  int B[LEN],G[LEN];
+  int stp=sqrt(/* 幂的范围 */);
+
+  B[0]=G[0]=1;
+  for(int i=1;i<stp;i++){
+    B[i]=1ll*B[i-1]*x%MOD;
+  }
+  G[1]=1ll*B[stp-1]*x%MOD;
+  for(int i=2;i<=MOD/stp;i++){
+    G[i]=1ll*G[i-1]*G[1]%MOD;
+  }
+  /* x^p == 1ll*G[p/stp]*B[p%stp]%MOD */
+}
+\end{Cpp}

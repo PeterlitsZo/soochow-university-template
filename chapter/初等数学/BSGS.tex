@@ -1,0 +1,14 @@
+\section{BSGS} \label{sec:BSGS}
+在循环节（见章节 \ref{sec:循环节}）中，我们尝试求解方程\[
+    a^x \equiv b \pmod n
+\]
+但是我们只能做出来复杂度为 $\FnO(\varphi(n))$ 的算法出来。
+
+我们可以根据 BSGS 算法来将这个复杂度开个根。首先我们不妨令 $x = iS + b$，那么有\[
+    a^b \equiv a^{-iS} b \pmod n
+\]
+
+其中 $i$ 我们只需要遍历约 $n \over S$ 次，然后建立哈希表。而 $b$ 只需要遍历 $S$
+次即可，即可求出解。
+
+同样我们也可以根据这个来算快速幂（见 \ref{sec:快速幂}）。

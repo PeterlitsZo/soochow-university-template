@@ -1,0 +1,49 @@
+\section{向量}
+向量是同时具有大小和方向的量。
+
+模板如下：
+\begin{Cpp}
+struct Vec{
+  double x,y;
+  Vec(double x=0.0,double y=0.0):x(x),y(y){}
+  Vec operator+(Vec other){return Vec(x+other.x,y+other.y);}
+  Vec operator-(Vec other){return Vec(x-other.x,y-other.y);}
+  Vec operator*(double k){return Vec(x*k,y*k);}
+  double len2(){return x*x+y*y;}
+  double len(){return sqrt(len2());}
+  double times(Vec other){return x*other.y-y*other.x;}
+  Vec rotate_90(){return Vec(y,-x);}
+};
+\end{Cpp}
+
+\subsection{数量积} \label{subsec:向量数量积}
+数量积又称内积、点积。它的运算符号一般是一个点：`$\cdot$'。它有：
+$$
+    \vec a \cdot \vec b = |\vec a| |\vec b| \cos \theta
+$$
+
+因为 $\theta = 0 \Rightarrow \cos \theta = 0$，故我们常常使用数量积来断定两个直
+线时候垂直。
+
+\subsection{向量积} \label{subsec:向量向量积}
+向量积又称叉积。它的运算符号一般是一个叉叉：`$\times$'。
+$$
+    \vec a \times \vec b = \begin{vmatrix}
+        \vec i & \vec j & \vec k \\
+        a_x    & a_y    & a_z    \\
+        b_x    & b_y    & b_z    \\
+    \end{vmatrix}
+$$
+
+一般而言我们有 $a_z = b_z = 0$，这个时候，根据 \ref{sec:行列式}，我们有：
+$$
+    \vec a \times \vec b = (a_x b_y - a_y b_x) \vec k
+$$
+
+此外，向量积对应的代数系统有：反交换律，分配律。
+
+向量积的模对应了平行四边形的面积大小，如果为 $0$ 的话，那么说明两个直线平行。我
+们还可以根据这个正负号来在 Andrew 求凸包（见 \ref{subsec:Andrew求凸包}）的时候来
+判断向左转抑或是向右转。
+
+

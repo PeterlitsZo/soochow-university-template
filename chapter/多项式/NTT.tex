@@ -1,0 +1,166 @@
+\section{NTT - 快速数论变换}
+NTT 是带模的整数多项式乘法。常数较小。
+
+NTT 可能需要一些关于原根（见章节 \ref{sec:原根}）的知识。
+
+NTT 需要的模是满足 $p = q2^n + 1$ 的质数。一般情况下，我们会使用数字：
+$$\begin{aligned}
+    p = 1004535809, g = 3 \\
+    p = 998244353,  g = 3 \\
+\end{aligned}$$
+
+这些质数的原根含有 $3$，这是一个比较好的性质。
+
+根据原根的性质，那么有 $3 ^ {p - 1} \equiv 1 \pmod p$。我们可以把 FFT 中的
+\verb|step| 换成 $3 ^ {p - 1 \over w}$，不妨取名为 $s$。这样子我们就可以说 $s^1$
+，$s^2$ 一直到 $s^w$ 都是模 $p$ 不相同的数。
+
+FFT 中最重要的就是快速地将系数表示转换为点值表示，那么横坐标的选择就尤为重要了，
+在 FFT 中我们选择了单位复根。带来了一些可能不大必要的复杂度，这里我们就选择一些
+原根的幂，就不需要涉足复数了。
+
+对比 FFT 的分治过程。对于 $A(x)$ 有：$A(x) = A'(x^2) + xA''(x^2)$ 和 $A(-x) =
+A'(x^2) - xA''(x^2)$ 对吧。而对于 NTT 而言，我们依然有这些条件。那么我们如果算出
+了子结构的 $g^n$ 对应的值 $A'(g^n)$ 和 $A''(g^n)$，那么算出 $A(g^{n})$ 也不算
+难吧！对于原根而言，我们有：$g^n \equiv -g^{w/2 + n} \pmod p, n \le w/2$ 这么一
+个性质。因此我们也能搞出来 $A(g^{w/2+n})$。（阿西吧我也不知道我在说什么了，估计
+有错误，TODO）。
+
+代码如下：
+\begin{Cpp}
+int P=998244353;
+
+int up_2p(int a){
+  a--; for(int i:{1,2,4,8,16}) // 4*8 -> 2*16
+    a|=a>>i;
+  return a+1;
+}
+
+void ntt(int NUM[],int on){
+  for(int i=1;i<LEN;i++){
+    // 这 rev 玩意可以预处理。
+    rev[i]=(rev[i>>1]>>1)|(i&1?(LEN>>1):0);
+    if(i<rev[i])swap(NUM[i],NUM[rev[i]]);
+  }
+  for(int w=2;w<=LEN;w<<=1){
+    // P-1 能多次被 2 整除必不可少。
+    int step=qpow(3,(P-1)/w);
+    for(int i=0;i<LEN;i+=w){
+      // cur = 3^0
+      int cur=1;
+      for(int j=i;j<i+w/2;j++){
+        int g=NUM[j],h=1ll*cur*NUM[j+w/2]%P;
+        NUM[j]=(g+h)%P,NUM[j+w/2]=(g-h+P)%P;
+        cur=1ll*cur*step%P;
+      }
+    }
+  }
+  if(on==-1)for(int i=0;i<LEN;i++)
+    NUM[i]/=LEN;
+}
+\end{Cpp}
+
+这个板子好像没有啥用，附一个 oi-wiki 的板子吧：
+\begin{Cpp}
+#include <algorithm>
+#include <bitset>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <set>
+#include <string>
+#include <vector>
+using namespace std;
+
+inline int read() {
+  int x = 0, f = 1;
+  char ch = getchar();
+  while (ch < '0' || ch > '9') {
+    if (ch == '-') f = -1;
+    ch = getchar();
+  }
+  while (ch <= '9' && ch >= '0') {
+    x = 10 * x + ch - '0';
+    ch = getchar();
+  }
+  return x * f;
+}
+void print(int x) {
+  if (x < 0) putchar('-'), x = -x;
+  if (x >= 10) print(x / 10);
+  putchar(x % 10 + '0');
+}
+
+const int N = 300100, P = 998244353;
+
+inline int qpow(int x, int y) {
+  int res(1);
+  while (y) {
+    if (y & 1) res = 1ll * res * x % P;
+    x = 1ll * x * x % P;
+    y >>= 1;
+  }
+  return res;
+}
+
+int r[N];
+
+void ntt(int *x, int lim, int opt) {
+  register int i, j, k, m, gn, g, tmp;
+  for (i = 0; i < lim; ++i)
+    if (r[i] < i) swap(x[i], x[r[i]]);
+  for (m = 2; m <= lim; m <<= 1) {
+    k = m >> 1;
+    gn = qpow(3, (P - 1) / m);
+    for (i = 0; i < lim; i += m) {
+      g = 1;
+      for (j = 0; j < k; ++j, g = 1ll * g * gn % P) {
+        tmp = 1ll * x[i + j + k] * g % P;
+        x[i + j + k] = (x[i + j] - tmp + P) % P;
+        x[i + j] = (x[i + j] + tmp) % P;
+      }
+    }
+  }
+  if (opt == -1) {
+    reverse(x + 1, x + lim);
+    register int inv = qpow(lim, P - 2);
+    for (i = 0; i < lim; ++i) x[i] = 1ll * x[i] * inv % P;
+  }
+}
+
+int A[N], B[N], C[N];
+
+char a[N], b[N];
+
+int main() {
+  register int i, lim(1), n;
+  scanf("%s", &a);
+  n = strlen(a);
+  for (i = 0; i < n; ++i) A[i] = a[n - i - 1] - '0';
+  while (lim < (n << 1)) lim <<= 1;
+  scanf("%s", &b);
+  n = strlen(b);
+  for (i = 0; i < n; ++i) B[i] = b[n - i - 1] - '0';
+  while (lim < (n << 1)) lim <<= 1;
+  for (i = 0; i < lim; ++i) r[i] = (i & 1) * (lim >> 1) + (r[i >> 1] >> 1);
+  ntt(A, lim, 1);
+  ntt(B, lim, 1);
+  for (i = 0; i < lim; ++i) C[i] = 1ll * A[i] * B[i] % P;
+  ntt(C, lim, -1);
+  int len(0);
+  for (i = 0; i < lim; ++i) {
+    if (C[i] >= 10) len = i + 1, C[i + 1] += C[i] / 10, C[i] %= 10;
+    if (C[i]) len = max(len, i);
+  }
+  while (C[len] >= 10) C[len + 1] += C[len] / 10, C[len] %= 10, len++;
+  for (i = len; ~i; --i) putchar(C[i] + '0');
+  puts("");
+  return 0;
+}
+\end{Cpp}

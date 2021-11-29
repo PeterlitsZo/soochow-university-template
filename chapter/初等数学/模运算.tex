@@ -1,0 +1,22 @@
+\section{模运算} \label{sec:模运算}
+这里只是用来讨论模运算的性质的。并不是用来讨论怎么进行计算。
+
+如果想要看如何计算模下乘法，可以去看章节 \ref{sec:模下乘}，如果想要看如何计算模
+下的快速幂，可以去看章节 \ref{sec:快速幂}。
+
+我们先约定 $a \equiv b \pmod n$ 和 $p \equiv q \pmod n$。
+
+首先我们可以在模下使用任意的四则运算，除了乘法：\begin{align*}
+    a + c & \equiv b + c \pmod n \\
+    ac & \equiv bc \pmod n \\
+    a^c & \equiv b^c \pmod n \\
+    a + p & \equiv b + q \pmod n \\
+    ap & \equiv bq \pmod n
+\end{align*}
+
+但是需要注意的是，如果是 $a^p \mod n$ 这种形式，下列等式可能并不满足：\begin{align*}
+    a^p & \equiv b^q \pmod n \\
+    c^p & \equiv c^q \pmod n
+\end{align*}
+这种情况我们需要参考欧拉定理或者扩展欧拉定理（见章节 \ref{sec:欧拉定理}）来进行
+降幂。
