@@ -59,3 +59,51 @@ ll C(int N,int m){
         指定第一个是虚拟球去掉即可。
 \end{itemize}
 
+
+
+\subsection{性质}
+组合数学有着一些独有的性质：
+
+选择状态取反：\[
+    {n \choose k} = {n \choose n - k}
+\]
+
+定义推导出来的玩意：\[
+    {n \choose k} = {n! \over k! (n - k)!} = {n \over k} {n - 1 \choose k - 1}
+\]
+
+加法原理，分为选自己和不选自己两种情况：\[
+    {n \choose k} = {n - 1 \choose k - 1} {n - 1 \choose k}
+\]
+
+瞎鸡儿乱选，那么每一元素就是两种独立的状态，乘法原理有（章节 \ref{sec:二项式定%
+理} 二项式定理中对应着 $a = b = 1$）：\[ \sum_{i} {n \choose i} = 2^n \]
+
+只选奇数或者只选偶数：\[
+    \sum_{i \bmod 2 = 0} {n \choose i} = 2^{n - 1}
+\]
+
+加加减减地选择，可以用二项式定理（见章节 \ref{sec:二项式定理}）来推：\[
+    \sum^{n}_{i = 0} (-1)^i {n \choose i} = [n = 1]
+\]
+
+拆组合数：\[
+    \sum_{i=0}^{k} {n \choose i} {k \choose k - i} = {n + k \choose k}, \qquad (n
+    \ge k)
+\] \[
+    \sum_{i=0}^{n} {n \choose i}^2 = {2n \choose n}
+\]
+
+带权和的一个例子：\[
+    \sum_{i=0}^{n} i{n \choose i} = n2^{n - 1}
+\] \[
+    \sum_{i=0}^{n} i^2{n \choose i} = n(n + 1)2^{n - 2}
+\]
+
+恒等式证明中较常用：\[
+    \sum_{l=0}^{n} {l \choose k} = {n + 1 \choose k + 1}
+\]
+
+和斐波那契数有关的式子：\[
+    \sum_{i = 0}^{n} {n - i \choose i} = F_{n + 1}
+\]
