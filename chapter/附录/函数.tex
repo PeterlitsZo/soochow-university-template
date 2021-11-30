@@ -50,10 +50,25 @@ memset(A, -63, sizeof A);
 
 
 
-\subsection{随机排列}
-使用 \verb|shuffle(begin, end, randomer)| 可以用来随机排列，不过这个函数需要我们
-传入一个随机器。为了避免传入带来的心智负担，我们可以使用带有随机器的随机排列函数
-：\verb|random_shuffle|。它不需要第三个参数。
+\subsection{随机}
+\subsubsection{随机数}
+一般而言随机数算法都是使用的 \cmd{rand()}，它位于 \cmd{cstdlib} 的头文件中。在
+Linux 中它的范围是 $[0, 2^{31} - 1]$。它比较慢。它需要种子，如：
+\cmd{srand(time(0))}。
+
+我们或许需要更好的随机数算法了：位于 \cmd{random} 的 \cmd{mt19937} 和
+\cmd{mt19937\_64}。我们可以这么用它：
+\begin{Cpp}
+mt19937 R(time(0));
+printf("%ud",R());
+\end{Cpp}
+
+\subsubsection{随机排列}
+使用 \cmd{shuffle(\nam{begin}, \nam{end}, \nam{randomer})} 可以用来随机排列，不过
+这个函数需要我们传入一个随机器。为了避免传入带来的心智负担，我们可以使用带有随机
+器的随机排列函数：\cmd{random\_shuffle}。它不需要第三个参数。
+
+不过，\cmd{\nam{randomer}} 也可以选择 \cmd{mt19937(time(NULL))}。
 
 
 
