@@ -2,6 +2,13 @@
 \RequirePackage{fontspec}
 \setmonofont{Sarasa Term SC}
 
+% Scale all font size to 9pt
 \RequirePackage{lmodern}
 \RequirePackage{scrextend}
 \changefontsizes[9pt]{9pt}
+
+% Add circle number
+\RequirePackage{pifont}
+\newcommand\dingcircle[1]{%
+    \ding{\numexpr201+#1\relax}%
+}

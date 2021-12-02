@@ -10,7 +10,7 @@
 \newlength{\normalsizeHeight}
 \setlength{\normalsizeHeight}{\f@size pt}
 
-\lstnewenvironment{Cpp}
+\lstnewenvironment{Cpp}[1][]
     {\lstset{
         language=C++, 
         xleftmargin=2\normalsizeHeight,
@@ -24,6 +24,8 @@
         commentstyle=\color{dkgreen},
         stringstyle=\color{mauve},
         breaklines=true,
-        breakatwhitespace=true
+        breakatwhitespace=true,
+        #1
         }
     }{}
+
