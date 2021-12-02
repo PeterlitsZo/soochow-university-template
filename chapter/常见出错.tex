@@ -8,8 +8,8 @@
     \item 数组的大小是否不太够啊？数组有没有正确地初始化？
     \item 是否忘记初始化了？对于会重复调用的部分，那个 \verb|static| 不可声明即
         初始化哦。
-    \item 是不是右移的时候，字面量的类型范围不够大啊？比如 \verb|1ll << k| 而不
-        是 \verb|1 << k|。
+    \item 是不是右移的时候，字面量的类型范围不够大啊？比如说 \cmd{1ll<<k} 而不
+        是 \cmd{1<<k}。
     \item 是否使用了已经 \verb|erase| 的迭代器？
     \item 输入输出是不是对的？尤其是多测试的样例。
 \end{itemize}
@@ -31,12 +31,14 @@
     \item 是不是数组开太大了？加上 \verb|static| 或者把它放到外面去。
     \item 是不是数组开小了？正如上所示，超出范围会运行超时，但是有时候是本身数组
         就开小了。
+    \item \cmd{memset} 的开销太大了，减少 \cmd{memset} 的范围。
 \end{itemize}
 
 \subsection{RE - 运行时错误}
 \begin{itemize}
     \item 是否使用了已经 erase 的迭代器？
     \item 是否 \cmd{--} 了 \cmd{begin} 迭代器或者 \cmd{++} 了 \cmd{end} 迭代器？
+    \item 是否本来 \cmd{for} 应该递减的，结果却用了 \cmd{i++}。
 \end{itemize}
 
 \section{计算几何}
