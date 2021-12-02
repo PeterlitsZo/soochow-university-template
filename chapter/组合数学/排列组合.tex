@@ -7,13 +7,21 @@
     {n \choose k} = {n! \over k! (n-k)!}
 \]
 
-我们可以使用下列函数求出排列数和组合数（快速幂代码见章节 \ref{sec:快速幂}）：
+
+
+\subsection{模为素数时的打表法}
+我们可以使用下列函数打表求出排列数和组合数（要求模 $M$ 为一个素数，以保证有乘法
+逆元）（快速幂代码见章节 \ref{sec:快速幂}）：
 \begin{Cpp}
+constexpr MOD=/* 模 */;
+constexpr LEN=/* 排列组合的参数范围，必须 << MOD */;
 ll fac[LEN],inv[LEN];
 
 ll fpow(ll b,ll p);
 
+// 初始化。别忘了。
 void init(){
+  // etc...
   fac[0]=1;
   for(int i=1;i<LEN;i++)
     fac[i]=fac[i-1]*i%MOD;
@@ -22,11 +30,13 @@ void init(){
     inv[i]=inv[i+1]*(i+1)%MOD;
 }
 
+// 可选：求排列数
 ll A(int N,int m){
   if(m>N||m<0)return 0;
   return fac[N]*inv[N-m]%MOD;
 }
 
+// 可选：求组合数
 ll C(int N,int m){
   // 如果有 A 函数的话，直接：
   // return A(N,m)*inv[m]%MOD;
@@ -37,27 +47,43 @@ ll C(int N,int m){
 
 
 
-\subsection{捆绑法}
-
-把一些元素捆绑在一起以视为一个独立的元素。
-
-比如有 $5$ 个男生和 $3$ 个女生。女生都要在一起。问有多少种不同的排队情况。那么有
-：$A_6^6 A_3^3$
+\subsection{卢卡斯}
+如果 $n$ 之类的范围比较大而 $M$（模）较小，可以参考卢卡斯定理或者扩展卢卡斯定理
+（见章节 \ref{sec:卢卡斯}）。
 
 
 
-\subsection{插板法}
-\label{subsec:插板法} \label{subsec:插空法}
+\subsection{杨辉三角打表法}
+如果 $n$ 之类的范围比较小，而 $M$ 随意的话，我们也可以打表，不过是杨辉三角，即：
+\[
+    {n \choose k} \bmod M = \left({n - 1 \choose k - 1} + {n \choose k -
+    1}\right) \bmod M
+\]
 
-如果在 $m$ 个球中搞到 $n$ 个盒子中，盒子两两之间都是不同的，那么：
-\begin{itemize}
-    \item 如果不允许为空，那么解是 $m - 1 \choose n - 1$。这个解是因为 $m$ 个球
-        ，不包含两端有 $m - 1$ 个空，然后选择 $n - 1$ 个隔板。隔出来了之后就是
-        $n$ 个盒子了。
-    \item 如果允许为空，那么解是 $m + n - 1 \choose n - 1$。这个解是因为它插入了
-        虚拟球，一共有 $n$ 个盒子，那么我们在里面插入 $n$ 个虚拟球。选出来了之后
-        指定第一个是虚拟球去掉即可。
-\end{itemize}
+虽然都是打表，不过这个是二维表，前面的代码是一维的，所以虽然不再要求 $M$ 是模，
+但是也让 $n$ 的范围变小了。
+
+\TODOtag 记得改成统一的风格。
+别人的板子：
+\begin{Cpp}
+typedef long long lld;
+const int maxn = 1000+10;
+
+lld C_arr[maxn+10][maxn+10];
+
+void C_init(int n, int pr) {
+	for (int i = 0; i <= n; i++) {
+		C_arr[i][0] = C_arr[i][i] = 1;
+		for (int j = 1; j < i; j++)
+			C_arr[i][j] = (C_arr[i - 1][j - 1]
+                + C_arr[i - 1][j]) % pr;
+	}
+}
+
+lld C(int n, int m) {
+	return C_arr[n][m];
+}
+\end{Cpp}
 
 
 
