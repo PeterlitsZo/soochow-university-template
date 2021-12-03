@@ -11,6 +11,8 @@ header 保证 `<type>: <title>`。其中 `type` 包括了：
 * `feat`：增加新东西。
 * `style`：修改代码格式。
 * `fix`：修改 bug。
+* `chor`：辅助工具的改动（如 gitignore）。
+* `rfcr`：重构。
 
 保证提交最小化。即一个提交只能干一件事情。
 
