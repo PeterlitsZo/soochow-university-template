@@ -1,4 +1,6 @@
-\section{欧几里德算法}\label{sec:欧几里德算法}
+\section{欧几里德算法 \& GCD \& LCM}
+\label{sec:欧几里德算法}
+
 在一般的环境中，我们可以使用 \cmd{\_\_gcd(x, g)} 直接求解，其代码约为：
 \begin{Cpp}
 int gcd(int a,int b){return a?gcd(b%a,a):b;}
@@ -7,22 +9,64 @@ int gcd(int a,int b){return a?gcd(b%a,a):b;}
 欧几里德同时也求出了 $ax + by$ 这个线性组合的最小解。为了得到 $x$ 和 $y$ 的值，
 也可以使用更高级的扩展欧几里德（见章节 \ref{sec:扩展欧几里德}）。
 
-\subsection{扩展欧几里德}\label{sec:扩展欧几里德}\label{subsec:扩展欧几里德}
+而对于最大公约数，它有几个性质：\[
+    ab = \gcd(a, b) \cdot \lcm(a, b)
+\] \[
+    abc = {\lcm(a, b, c) \gcd(a, b) \gcd(a, c) \gcd(b, c) \over \gcd(a, b, c)}
+\]
+
+同时还有一些有意思的性质：
+\begin{itemize}
+    \item 如果 $a$ 是奇数且 $b$ 是偶数，那么 $a \mid b \Rightarrow a \mid {b
+        \over 2}$。
+\end{itemize}
+
+
+
+\subsection{扩展欧几里德}
+\label{sec:扩展欧几里德}\label{subsec:扩展欧几里德}
+
 简单的欧几里德求最大公约数可以参考 \ref{sec:欧几里德算法} 章中的相关代码。扩展欧
 几里德不仅可以得到最大公约数，并且可以得到斐蜀定理（见章节 \ref{sec:裴蜀定理}）
 中提到的 $x$ 和$y$ 的值。其代码如下：
 \begin{Cpp}
 int exgcd(int a,int b,int& x,int& y){
-  if(!a){
-    x=0,y=1;
-    return b;
-  }else{
-    int res=exgcd(b%a,a,y,x);
-    y-=(b/a)*x;
-    return res;
-  }
+  if(!a) return x=0,y=1,b;
+  int res=exgcd(b%a,a,y,x);
+  x-=(b/a)*y;
+  return res;
 }
 \end{Cpp}
+
+
+
+\subsubsection{解同余方程}
+
+也就是说，我们可以利用扩展欧几里德来求出：\[
+    ax + by = (a,  b)
+\]
+但是很明显解出来的 $x$ 和 $y$ 并不是唯一解。那么所有解形成的解空间是什么呢？可以
+证明出来，$(X, Y) = (x + t {b \over (a, b)}, y - t {a \over (a, b)})$，证明见下。
+
+这很容易证明。对于 $ax + by = (a, b)$ 和 $aX + bY = (a, b)$，那么有：\[
+    \begin{aligned}
+    & a(X - x) + b(Y - y) = 0 \\
+    \Longrightarrow & {a \over (a, b)} (X - x) = - {b \over (a, b)} (Y - y)
+    \end{aligned}
+\]
+
+而 $\left({a \over (a, b)}, {b \over (a, b)}\right) = 1$，所以自然 ${b \over (a,
+b)} \mid (X - x)$，故 $X = x + {b \over (a, b)} t$。
+
+那么自然 $X$ 的最小正整数解为 $x \bmod {b \over (a, b)}$。
+
+当然如果我们求解的是：\[
+    ax + by = d
+\]这个在 $(a, b) \mid d$ 的时候比较好办，如果不满足的话，自然也没有解了。
+
+
+
+\subsubsection{求解逆元}
 
 我们也可以使用扩展欧几里德来求解逆元：如果模为 $b$，而我们要求 $a$ 在模 $b$ 意义
 下的逆元的话，那么我们可以使用 \cmd{exgcd(a,b,x,y)}，如果返回的结果是 $1$ 的话，
@@ -38,3 +82,6 @@ int exgcd(int a,int b,int& x,int& y){
 用欧拉定理（见章节 \ref{sec:欧拉定理}）来求解逆元，不过这是吃力不讨好的事情。如
 果 $b$ 本身是一个素数的话，那么我们可以直接使用费马小定理（见章节 \ref{sec:费马%
 小定理}）。
+
+
+
