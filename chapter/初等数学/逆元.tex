@@ -1,0 +1,27 @@
+\section{逆元}
+\label{sec:逆元}
+
+
+
+\subsection{线性求逆元}
+首先我们要求一堆逆元的情况下，如果仍然用朴素的求逆元算法的话可能时间复杂度为
+$\FnO(n \lg n)$，而丧心病狂的出题人会卡那个 $\lg n$ 的时间复杂度。
+
+现在问题是，如何求 $i^{-1}$，我们代入有：\[
+    \left\lfloor{p \over i}\right\rfloor i + p \bmod i \equiv 0 \pmod p
+\]
+
+那么自然有：\[
+    \left\lfloor{p \over i}\right\rfloor (p \bmod i)^{-1} + i^{-1} \equiv 0 \pmod p
+\]
+
+也就是说如果我们令 \cmd{inv[\nam{i}]} 为 $i$ 在模 $p$ 下的逆元，那么自然有：
+\begin{Cpp}
+{
+  inv[1]=1;
+  for(int i=2;i<p;i++){
+    inv[i]=-(p/i)*inv[p%i];
+    inv[i]=(inv[i]%p+p)%p;
+  }
+}
+\end{Cpp}
