@@ -1,0 +1,64 @@
+\section{埃氏筛}
+\label{sec:埃氏筛}
+
+
+
+欧拉筛见章节 \ref{sec:欧拉筛}。与欧拉筛不同的是，埃氏筛的时间复杂度略大一些。埃
+氏筛的复杂度为 $\FnO(n \lg \lg n)$（根据质数分布定理和调和级数可以搞出来）。
+
+代码如下：
+\begin{Cpp}
+{
+  // constexpr int LEN=/* 略大于 n */;
+  // static bitset<LEN> notP;
+  // int PS[LEN],n=/* 筛的范围 */;
+
+  for(int i=2;i<=n;i++){
+    if(!notP[i]){
+      PS[++PS[0]]=i;
+      for(int j=2*i;j<=n;j+=i){
+        notP[j]=1;
+      }
+    }
+  }
+}
+\end{Cpp}
+
+
+
+\subsection{区间筛}
+在区间比较窄的情况下，我们可以用区间筛来把区间内所有的质数筛出来。首先区间的左边
+是 $L$，其次它的宽度是 $W$。
+
+然后我们观察，那么里面所有的合数，肯定都存在一个因子（设为 $f$）是满足表达式 $f
+\le \sqrt{L + W}$ 的。那么我们只需要遍历 $[2, \sqrt{L + W}]$，并筛掉区间内的所有
+不对的数即可。
+\begin{Cpp}
+{
+  // constexpr int LEN=/* 略大于 W 和 sqrt(L+W+5) */;
+  // static bitset<LEN> notP,notPOff;
+  // static int P[LEN];
+  // int L=/* 筛的起始点 */, W=/* 筛的范围大小 */;
+  // // 如果 W=R-L+1; 其中 R 是筛的终点（含），
+  // // 那么对应的，for(i=0;i<W;i++) notPOff[i];
+
+  // 初始化：
+  // notP.reset(),notPOff.reset(),P[0]=0;
+
+
+  for(ll i=2;i*i<=L+W+5;i++){
+    if(!notP[i]){
+      P[++P[0]]=i;
+      for(ll j=i*2;j*j<=L+W+5;j+=i){
+        notP[j]=1;
+      }
+      for(ll j=max((L+i-1)/i,2ll)*i;j<=L+W+1;j+=i){
+        notPOff[j-L]=1;
+      }
+    }
+  }
+
+  // notPOff[i]==false 表示 L+i 是素数。
+}
+\end{Cpp}
+
