@@ -1,4 +1,8 @@
-\section{欧拉函数} \label{sec:求欧拉函数} \label{sec:欧拉函数}
+\section{欧拉函数}
+\label{sec:求欧拉函数} \label{sec:欧拉函数}
+
+
+
 欧拉函数的定义是：小于等于 $n$ 的所有与 $n$ 互质的数的个数。
 
 这也说明了：
@@ -27,3 +31,48 @@ int phi(int x){
 n)$。
 
 这里我们可以根据欧拉函数来解决欧拉定理（见章节 \ref{sec:欧拉定理}）。
+
+
+
+\subsection{线性筛求欧拉函数}
+\label{subse:线性筛球欧拉函数} \label{sec:线性筛求欧拉函数}
+
+我们可以用类似 \ref{sec:欧拉筛} 的算法来求出所有数的欧拉函数值。这是因为欧拉函数
+有着一个性质：当 $p$ 与 $x$ 互质时，有满足式子：$\phi(p x) = \phi(p) \times
+\phi(x)$，具有这种性质的函数被叫做积性函数。而不互质的时候呢，恰好欧拉函数有对应
+的性质：$\phi(p x) = p \times \phi(x)$
+
+代码如下：
+\begin{Cpp}
+const int RAG=/* PS 这个素数表和欧拉函数表的最大范围 */;
+int PS[RAG/* 因为素数分布定理，P_RAG 等于 10^P 的时候，右移 log_2 P 位即可*/];
+int elr[RAG]
+bitset<RAG> notP;
+
+void init() {
+    notP[0]=notP[1]=true;
+    elr[0]=-1,elr[1]=1;
+    for(int i=2;i<P_RAG;i++){
+        if(!notP[i])
+            PS[++PS[0]]=i,elr[i]=i-1;
+        for(int pi=1;PS[pi]*i<P_RAG;pi++){
+            notP[PS[pi]*i]=true;
+            if(i%PS[pi]==0){
+                elr[PS[pi]*i]=PS[pi]*elr[i];
+                break;
+            }else
+                elr[PS[pi]*i]=elr[PS[pi]]*elr[i];
+        }
+    }
+}
+\end{Cpp}
+
+其中我们认为，如果 $\phi(p \cdot x)$ 中的 $x \bmod p$，这说明 $p \cdot x$ 有的所
+有素因数 $x$ 都有，既有：$\phi(p \cdot x) = p \times x \times \prod^{s}_{i=1}
+\frac{p_i - 1}{p_i} = p \times \phi(x)$。反之，我们有：$\phi(p \cdot x) = (p -
+1) \times \phi(x)$。
+
+即，我们把它分为两种方案来求值：1. 互素，我们采用积性函数的性质。2. 非互素，我们
+采用他本身的性质。
+
+
