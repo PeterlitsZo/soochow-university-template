@@ -78,12 +78,30 @@ p^c) = n'$ 即可：\begin{align*}
     \sum_{j=i+1}^{\lfloor{n \over d}\rfloor} \sum_{e \mid \gcd(i, j)} \mu(e)
 \end{align*}
 
-现在我们又开始枚举 $e$ 了啦！\begin{align*}
-    & \sum_{d=1}^{n} d \sum_{e=1}^{n} \mu(e) \left\lfloor{n \over de}\right\rfloor^2
+现在我们又开始枚举 $e$ 了啦！我们知道 $e$ 同时是 $i$ 和 $j$ 的公约数。也就是说，
+在给定的范围内，有多少个 $\langle i, j \rangle$ 同时是都是 $e$ 的倍数。
+
+我们知道，$1$ 到 $\left\lfloor{n \over d}\right\rfloor$ 范围内，有
+$\left\lfloor{n \over de}\right\rfloor$ 个数是 $e$ 的倍数，从中随便徐选两个，于
+是有：\begin{align*}
+    & \sum_{d=1}^{n} d \sum_{e=1}^{n} \mu(e) { \left\lfloor{n \over
+        de}\right\rfloor \left(\left\lfloor{n \over de}\right\rfloor - 1\right)
+        \over 2}
 \end{align*}
 
 我们敏锐地注意到，如果 $D = de$，那么 $D > n$ 时就没有意义。我们根据这个来减少枚
 举范围，有：\begin{align*}
-    & \sum_{D=1}^{n} \sum_{d \mid D} d \mu({D \over d}) \left\lfloor{n \over D}\right\rfloor^2 \\
-    = & \sum_{D=1}^{n} \left\lfloor{n \over D}\right\rfloor^2 \varphi(D) 
+    & \sum_{D=1}^{n} \sum_{d \mid D} d \mu({D \over d}) {\LRfloor{n \over
+        D}\LRbra{\LRfloor{n \over D} - 1} \over 2} \\
+    = & \sum_{D=1}^{n} {\LRfloor{n \over D} \LRbra{\LRfloor{n \over D} - 1} \over
+        2} \varphi(D) 
 \end{align*}
+
+\paragraph{扩展} 求 \[
+    \sum_{i=1}^n \sum_{j=1}^n \gcd(i, j)
+\]
+
+解为：\[
+    \sum_{D=1}^{n} \LRfloor{n \over D}^2 \varphi(D) 
+\]
+
