@@ -1,28 +1,38 @@
-\section{中国剩余定理} \label{sec:中国剩余定理}
+\section{中国剩余定理}
+\label{sec:中国剩余定理}
+
+
 
 中国剩余定理是用来求解一元线性同余方程组的算法。
 
-对于：
-$$\begin{cases}
-    x \equiv a_1 \pmod {n_1}, \\
-    x \equiv a_2 \pmod {n_2}, \\
-    \quad \vdots              \\
-    x \equiv a_k \pmod {n_k}, \\
-\end{cases}$$
-
-我们如果需要求出 $x$（首先需要注意的是，要不然 $x$ 有无穷多解，要不然没有解，故
-中国剩余定理只给出最小解，或者说，模 $\lcm(\{n_i\})$ 下的唯一解），那么我们需要
-遵守下列算法流程：
+对于：\[
+    \left\{\,
+        \begin{aligned}
+            x \equiv{}&{} a_1 \pmod {n_1}, \\
+            x \equiv{}&{} a_2 \pmod {n_2}, \\
+              \vdots{}&{} \\
+            x \equiv{}&{} a_k \pmod {n_k}. \\
+        \end{aligned}
+    \right.
+\]我们如果需要求出 $x$（首先需要注意的是，要不然 $x$ 有无穷多解，要不然没有解，
+故中国剩余定理只给出最小解，或者说，模 $\lcm(\{n_i\})$ 下的唯一解），那么我们需
+要遵守下列算法流程：
 \begin{enumerate}
     \item 计算 $n = n_1 \cdot n_2 \cdot \cdots \cdot n_k$。
     \item 对于第 $i$ 个方程，计算：
         \begin{enumerate}
             \item 令 $m_i = {n \over n_i}$。
-            \item 计算 $m_i$ 在 $n_i$ 下的逆元 $m_i ^ {-1}$。
-            \item 计算 $c_i = m_i m_i^{-1}$，注意不要取模。
+            \item 计算 $m_i$ 在 $n_i$ 下的逆元 $m_i' \equiv m_i ^ {-1} \pmod n_i$。
+            \item 计算 $c_i = m_i m_i'$。
         \end{enumerate}
     \item 解为：$x \equiv \sum_{i=1}^k a_i c_i \pmod n$。
 \end{enumerate}
+
+对于 $n_i$ 而言，有：\[
+    a_i c_i = a_i m_i m_i' = a_i \cdot {n \over n_i} \cdot \left({n \over n_i}\right)'
+\]在模 $n_i$ 下，$m_i'$ 是 $m_i$ 的倒数，故自然 $a_i c_i \equiv a_i \pmod {n_i}$，
+而在模 $n_j, j \ne i$ 下自然没有这个道理，相反因为 $n_j \mid {n \over n_i}$，故
+$a_i c_i \equiv 0 \pmod {n_j}$。得证。
 
 参考代码如下（其中扩展欧几里德见章节 \ref{subsec:扩展欧几里德}）：
 \begin{Cpp}
@@ -37,6 +47,8 @@ ll CRT(int k,ll a[],ll r[]){
   }
 }
 \end{Cpp}
+
+
 
 \subsection{CRT 的应用}
 有时候我们可能需要对一个答案取模，而恰好这个模可能，不是一个质数，而是两两互不相
@@ -55,6 +67,8 @@ ll CRT(int k,ll a[],ll r[]){
     \item 多个方程。两两地做即可。
 \end{itemize}
 
+
+
 \subsection{Garner 算法}
 我们提到 CRT 的解在 $\lcm(\{n_i\})$ 下是一一对应的。这是因为 CRT 的解再分别取模
 ，就能得到条件，而条件只能得到唯一的解，这是一个双射关系。
@@ -62,10 +76,10 @@ ll CRT(int k,ll a[],ll r[]){
 所以我们可以将一个数映射到一堆数上。\[
     \left\{
         \begin{aligned}
-            a \equiv{}&{} a_1 \pmod {p_1} \\
-            a \equiv{}&{} a_2 \pmod {p_2} \\
+            a \equiv{}&{} a_1 \pmod {p_1}, \\
+            a \equiv{}&{} a_2 \pmod {p_2}, \\
               \vdots{}&{} \\
-            a \equiv{}&{} a_k \pmod {p_k} \\
+            a \equiv{}&{} a_k \pmod {p_k}. \\
         \end{aligned}
     \right.
 \]
