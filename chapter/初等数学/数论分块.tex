@@ -1,4 +1,8 @@
-\section{数论分块} \label{sec:数论分块}
+\section{数论分块}
+\label{sec:数论分块}
+
+
+
 数论分块主要是用来处理形如
 $$
     \sum^{n}_{i=1} \lfloor{n \over i}\rfloor
@@ -21,6 +25,17 @@ $n - \sqrt n$ 个数中一共就只有 $\sqrt n$ 种数字。很明显，如果�
 x}\rfloor = \left\lfloor\frac{n}{\left\lfloor{n \over
 l}\right\rfloor}\right\rfloor$。
 
-值的一提的是，如果数论分块包含了多个式子相乘，如 $\sum^{n}_{i=1} \lfloor{n \over
-i}\rfloor\lfloor{m \over i}\rfloor$ 等之类的，我们可以跳转到 $min(f(n, l), f(m,
-l))$ 即可。
+样例代码如下：
+\begin{Cpp}
+{
+  ll result=0;
+  for(ll i=1,nxt;i<=N;i=nxt){
+    nxt=N/(N/i)+1;
+    result+=(nxt-i)*(N/i);
+  }
+}
+\end{Cpp}
+
+值的一提的是，如果数论分块包含了多个式子相乘，比如说 $\sum^{n}_{i=1} \lfloor{n
+\over i}\rfloor\lfloor{m \over i}\rfloor$ 等之类的，我们可以跳转到 $min(f(n, l),
+f(m, l))$ 即可。
