@@ -3,48 +3,55 @@
 
 
 
-中国剩余定理是用来求解一元线性同余方程组的算法。
+中国剩余定理是用来求解一元线性同余方程组的算法。\textbf{要求模两两之间互素，如果
+模两两之间不是互素的，请看看 exCRT（见章节 \ref{subsec:exCRT}）}。
 
 对于：\[
     \left\{\,
         \begin{aligned}
-            x \equiv{}&{} a_1 \pmod {n_1}, \\
-            x \equiv{}&{} a_2 \pmod {n_2}, \\
+            x \equiv{}&{} a_1 \pmod {m_1}, \\
+            x \equiv{}&{} a_2 \pmod {m_2}, \\
               \vdots{}&{} \\
-            x \equiv{}&{} a_k \pmod {n_k}. \\
+            x \equiv{}&{} a_k \pmod {m_k}. \\
         \end{aligned}
     \right.
-\]我们如果需要求出 $x$（首先需要注意的是，要不然 $x$ 有无穷多解，要不然没有解，
-故中国剩余定理只给出最小解，或者说，模 $\lcm(\{n_i\})$ 下的唯一解），那么我们需
+\]我们如果需要求出 $x$（首先需要注意的是：要不然 $x$ 有无穷多解，要不然没有解，
+故中国剩余定理只给出最小解，或者说，模 $\lcm(\{m_i\})$ 下的唯一解），那么我们需
 要遵守下列算法流程：
 \begin{enumerate}
-    \item 计算 $n = n_1 \cdot n_2 \cdot \cdots \cdot n_k$。
+    \item 计算 $M = m_1 \cdot m_2 \cdot \cdots \cdot m_k$。
     \item 对于第 $i$ 个方程，计算：
         \begin{enumerate}
-            \item 令 $m_i = {n \over n_i}$。
-            \item 计算 $m_i$ 在 $n_i$ 下的逆元 $m_i' \equiv m_i ^ {-1} \pmod n_i$。
-            \item 计算 $c_i = m_i m_i'$。
+            \item 令 $n_i = {M \over m_i}$。
+            \item 计算 $n_i$ 在 $m_i$ 下的逆元 $n_i'$，以满足 $n_i n_i' \equiv 1 \pmod
+                {m_i}$。其中 $n_i$ 和 $m_i$ 必然是互质的，故必然有逆元。
+            \item 计算 $c_i = n_i n_i'$。
         \end{enumerate}
-    \item 解为：$x \equiv \sum_{i=1}^k a_i c_i \pmod n$。
+    \item 解为：$x \equiv \sum_{i=1}^k a_i c_i \pmod M$。
 \end{enumerate}
 
-对于 $n_i$ 而言，有：\[
-    a_i c_i = a_i m_i m_i' = a_i \cdot {n \over n_i} \cdot \left({n \over n_i}\right)'
-\]在模 $n_i$ 下，$m_i'$ 是 $m_i$ 的倒数，故自然 $a_i c_i \equiv a_i \pmod {n_i}$，
-而在模 $n_j, j \ne i$ 下自然没有这个道理，相反因为 $n_j \mid {n \over n_i}$，故
-$a_i c_i \equiv 0 \pmod {n_j}$。得证。
+对于 $m_i$ 而言，有：\[
+    a_i c_i = a_i n_i n_i' = a_i \cdot {m \over m_i} \cdot \left({m \over m_i}\right)'
+\]在模 $m_i$ 下，$n_i'$ 是 $n_i$ 的倒数，故自然 $a_i c_i \equiv a_i \pmod {m_i}$，
+而在模 $m_j, j \ne i$ 下自然没有这个道理，相反因为 $m_j \mid {m \over m_i}$，故
+$a_i c_i \equiv 0 \pmod {m_j}$。得证。
 
 参考代码如下（其中扩展欧几里德见章节 \ref{subsec:扩展欧几里德}）：
 \begin{Cpp}
-// 其中 k 代表了 a 和 r 的长度。其中 a 是余数，而
-// r 是模。
-ll CRT(int k,ll a[],ll r[]){
-  ll n,ans=0;
-  for(int i=0;i<k;i++) n=n*r[i]:
+// 其中 k 代表了 a 和 m 的长度。其中 a 是余数，而 m 是模
+// 。均从 0 开始。
+ll exgcd(ll a,ll b,ll &x,ll &y);
+
+ll crt(int k,ll a[],ll m[]){
+  ll M=1,ans=0;
+  for(int i=0;i<k;i++) M=M*m[i];
   for(int i=0;i<k;i++) {
-    ll m=n/r[i],b,y;
-    exgcd(m,r[i],b,y);
+    ll ni=M/m[i],invni,_;
+    exgcd(ni,m[i],invni,_);
+    ll c=ni*invni%M;
+    ans=(ans+a[i]*m[i])%M;
   }
+  return (ans%M+M)%M;
 }
 \end{Cpp}
 
@@ -63,7 +70,7 @@ ll CRT(int k,ll a[],ll r[]){
         ，说明我们可以通过扩展欧几里德（见章节\ref{subsec:扩展欧几里德}）来求出
         一组可行的 $b_1$ 和 $b_2$。
 
-        那么综上，$a$ 满足：\[a \equiv m_1 b_1 + r_1 \pmod{\lcm(m_1, m_2)}\]。
+        那么综上，$a$ 满足：\[a \equiv m_1 b_1 + r_1 \pmod{\lcm(m_1, m_2)}\]
     \item 多个方程。两两地做即可。
 \end{itemize}
 
@@ -109,3 +116,52 @@ for(int i=0;i<k;++i) {
 \end{Cpp}
 
 虽然不太懂这玩意有啥用，但是还是抄下来了。
+
+
+
+\subsection{exCRT}
+\label{subsec:exCRT}
+
+扩展中国剩余定理和中国剩余定理不大一样。主要是中国剩余定理，即 CRT 要求模之间两
+两互素。如果不互素的情况下就难办了。
+
+先考虑两个同余方程组：\[
+    \left\{\,
+        \begin{aligned}
+            x \equiv{}&{} a_1 \pmod {n_1}, \\
+            x \equiv{}&{} a_2 \pmod {n_2}, \\
+        \end{aligned}
+    \right.
+\]那么有 $n_1 p + a_1 = n_2 q + a_2$，因此有 $n_1 p - n_2 q = a_2 - a_1$。我们可
+以使用扩展欧几里德（见章节 \ref{subsec:exGCD}）解出可行解 $p$ 和 $q$。自然 $x
+\equiv n_1 p + a_1 \pmod {[n_1, n_2]}$。
+
+再考虑多个同余方程组。上面我们把了两个同余方程变成了一个，之后我们只需要每一次消
+掉一个，一直到只剩下一个就差不多得了。
+
+代码如下：
+\begin{Cpp}
+ll exgcd(ll a,ll b,ll &x,ll &y);
+
+// k 是 a 和 n 的长度。a 是余数，n 是模。保证 [n_0, n_1,
+// ..., n_{k-1}] <= LONG_LONG_MAX。数组从 0 开始。
+ll excrt(int k,ll a[],ll n[]){
+  // 初始化模和结果。
+  ll M=n[0],res=a[0];
+  for(int i=1;i<k;i++){
+    // assert(n[i] >= 0);
+    // new_res = res + M * p = a[i] + n[i] * q
+    // <=> M * p + n[i] * (-q) = a[i] - res
+    ll p,q,g=exgcd(M,n[i],p,q);
+    if((a[i]-res)%g!=0){
+      return -1;
+    }
+    // 得到新的模，和新的结果。
+    ll newM=M/g*n[i];
+    p=(__int128)(a[i]-res)/g*p%newM;
+    res=((res+(__int128)M*p)%newM+newM)%newM;
+    M=newM;
+  }
+  return res;
+}
+\end{Cpp}
